@@ -114,27 +114,4 @@ trait Payment_sdk {
         return $this->order_prefix . uniqid(mt_rand());
     }
 
-    /**
-     * 创建技订单号json
-     * @param $data
-     */
-    protected function createDeposit($data) {
-        $order_path = $this->order_path;
-        $this->create_directory_path($order_path);
-        $file = $order_path . $data['order_no'] . '.json';
-        $log = json_encode($data, JSON_PRETTY_PRINT);
-        $this->create_log($file, $log);
-    }
-    /**
-     * 订单提交失败更新数据
-     * @param $data
-     */
-    protected function deposit_abnormal($data) {
-        $order_path = $this->order_path;
-        $order_path = $order_path . $data['order_no'];
-        $original_file = $order_path . '.json';
-        $file = $order_path . '-fail.json';
-        rename($original_file, $file);
-    }
-
 }
