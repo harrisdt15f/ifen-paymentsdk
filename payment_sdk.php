@@ -69,42 +69,40 @@ trait Payment_sdk {
 
 	}
 
-    /**
-     * 提交订单生成订单数据
-     * @param $order_params
-     */
-    public function payment_forward($order_params) {
-        $payment_data_arr = json_decode($this->payment_data_json, true);
-        extract($payment_data_arr);
-        $local_code = $order_params['bank'];
-        if (isset($banks_for_sync[$local_code])) {
-            $code = $banks_for_sync[$local_code];
-        }
-        $min = $payment_setting_data['banks'][$code]['currency_min'];
-        $max = $payment_setting_data['banks'][$code]['currency_max'];
-        $deposit_order = $order_params;
-        $deposit_order['order_no'] = $this->getDepositOrderNum();//生成订单号
-        $deposit_order['ip']=$this->get_client_ip();//获取用户IP地址
-        $create_deposit = $this->createDeposit($deposit_order);//写入订单号
-        //##################【 准备要提交到第三方平台 】#################################
-        $forward_arr = [
-            'order_no' => $deposit_order['order_no'],
-            'amount' => $deposit_order['amount'],
-            'gateway' => $deposit_order['gateway'],
-            'bank' => $deposit_order['bank'],
-            'ip' => $deposit_order['ip'],
-        ];
-        header("Content-Type:text/html;charset=utf-8");
-        $url = $this->lgvpay_forward_url;
-        $result = $this->httpPost($url, $forward_arr);
-        if (!isset($result['error_msg'])) {
-            $payment_response = json_decode($result, true);
-        }
-        else
-        {
-            $this->deposit_abnormal($deposit_order);
-        }
-    }
+	/**
+	 * 提交订单生成订单数据
+	 * @param $order_params
+	 */
+	public function payment_forward($order_params) {
+		$payment_data_arr = json_decode($this->payment_data_json, true);
+		extract($payment_data_arr);
+		$local_code = $order_params['bank'];
+		if (isset($banks_for_sync[$local_code])) {
+			$code = $banks_for_sync[$local_code];
+		}
+		$min = $payment_setting_data['banks'][$code]['currency_min'];
+		$max = $payment_setting_data['banks'][$code]['currency_max'];
+		$deposit_order = $order_params;
+		$deposit_order['order_no'] = $this->getDepositOrderNum(); //生成订单号
+		$deposit_order['ip'] = $this->get_client_ip(); //获取用户IP地址
+		$create_deposit = $this->createDeposit($deposit_order); //写入订单号
+		//##################【 准备要提交到第三方平台 】#################################
+		$forward_arr = [
+			'order_no' => $deposit_order['order_no'],
+			'amount' => $deposit_order['amount'],
+			'gateway' => $deposit_order['gateway'],
+			'bank' => $deposit_order['bank'],
+			'ip' => $deposit_order['ip'],
+		];
+		header("Content-Type:text/html;charset=utf-8");
+		$url = $this->lgvpay_forward_url;
+		$result = $this->httpPost($url, $forward_arr);
+		if (!isset($result['error_msg'])) {
+			$payment_response = json_decode($result, true);
+		} else {
+			return $result;
+		}
+	}
 
     /**
      * 生成平台充值订单号
@@ -113,5 +111,10 @@ trait Payment_sdk {
     protected function getDepositOrderNum() {
         return $this->order_prefix . uniqid(mt_rand());
     }
+    public function payment_callback($channel, $all_inputs) {
+        $url = $this->lgvpay_baseurl . '/payment/moke/' . $channel . '/notify';
+        $result = $this->httpPost($url,$all_inputs);
+        return $result;
+	}
 
 }

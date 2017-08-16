@@ -11,7 +11,6 @@ $sdk_path = '';
 foreach ($var_explode as $number) {
 	$sdk_path .= $number . '/';
 }
-
 require_once $sdk_path . '/payment_sdk.php';
 require_once $sdk_path . '/withdraw.php';
 require_once $sdk_path . '/status_controll.php';

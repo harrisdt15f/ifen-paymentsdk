@@ -26,24 +26,6 @@ return [
 		'CEB' => 'EVER',
 		'PSBC' => 'PSBC',
 	],
-	//存款方式
-	'deposit_mode' => [
-		'DEPOSIT_API_REQUEST' => 1,
-		'DEPOSIT_API_RESPONSE' => 2,
-		'DEPOSIT_API_APPROVE' => 3,
-		'DEPOSIT_MODE_BANK_CARD' => 1,
-		'DEPOSIT_MODE_THIRD_PART' => 2,
-		'DEPOSIT_MODE_QRCODE' => 3,
-		'DEPOSIT_MODE_SDPAY' => 4,
-		'DEPOSIT_NOTE_MODE_SELF' => 1,
-		'DEPOSIT_NOTE_MODE_MOW' => 2,
-		'DEPOSIT_STATUS_NEW' => 0,
-		'DEPOSIT_STATUS_RECEIVED' => 1,
-		'DEPOSIT_STATUS_REFUSED' => 2,
-		'DEPOSIT_STATUS_SUCCESS' => 3,
-		'DEPOSIT_STATUS_ADD_FAIL' => 4,
-		'DEPOSIT_STATUS_DEPOSIT_FAIL' => 5,
-	],
 	//网站确认后要存数据的控制器路由
 	'confirm_internal' => [
 		'banks' => 'http://user.firecat.com/testnetbank_confirm',

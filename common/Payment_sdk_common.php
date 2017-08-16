@@ -389,7 +389,7 @@ class Payment_sdk_common {
 	 * Get Client user IP Address
 	 * @return string
 	 */
-	protected function get_client_ip() {
+	public function get_client_ip() {
 		if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
 			return $_SERVER['HTTP_CLIENT_IP'];
 		}
