@@ -1,0 +1,204 @@
+[ 北京时间：2017-08-15 16:51:12 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/methods",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 70,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.2011090000000000099777963669112068600952625274658203125,
+	"namelookup_time": 0.00013500000000000000172604985859692305893986485898494720458984375,
+	"connect_time": 0.036820999999999999563460306717388448305428028106689453125,
+	"pretransfer_time": 0.0368549999999999988720134069808409549295902252197265625,
+	"size_upload": 0,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 0,
+	"download_content_length": -1,
+	"upload_content_length": -1,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46660
+}
+####################################################################
+[ 北京时间：2017-08-15 16:51:12 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################
+[ 北京时间：2017-08-15 16:51:44 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/methods",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 0,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.2004579999999999972981612472722190432250499725341796875,
+	"namelookup_time": 4.3999999999999998855949867593295721235335804522037506103515625e-5,
+	"connect_time": 0,
+	"pretransfer_time": 0,
+	"size_upload": 0,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 0,
+	"download_content_length": -1,
+	"upload_content_length": -1,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "",
+	"certinfo": [
+	],
+	"primary_port": 0,
+	"local_ip": "",
+	"local_port": 0
+}
+####################################################################
+[ 北京时间：2017-08-15 16:51:44 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################
+[ 北京时间：2017-08-15 16:54:51 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/methods",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 70,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.2004640000000000032986946507662651129066944122314453125,
+	"namelookup_time": 0.00015899999999999998878154328085798852043808437883853912353515625,
+	"connect_time": 0.0781239999999999989999110994176589883863925933837890625,
+	"pretransfer_time": 0.07816700000000000037037040101495222188532352447509765625,
+	"size_upload": 0,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 0,
+	"download_content_length": -1,
+	"upload_content_length": -1,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46824
+}
+####################################################################
+[ 北京时间：2017-08-15 16:54:51 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################
+[ 北京时间：2017-08-15 16:55:20 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/methods",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 70,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.357592999999999994198418562518781982362270355224609375,
+	"namelookup_time": 5.3999999999999997979914512225008138557313941419124603271484375e-5,
+	"connect_time": 0.35745700000000002471978177709388546645641326904296875,
+	"pretransfer_time": 0.357582000000000010953016271741944365203380584716796875,
+	"size_upload": 0,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 0,
+	"download_content_length": -1,
+	"upload_content_length": -1,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46856
+}
+####################################################################
+[ 北京时间：2017-08-15 16:55:20 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################
+[ 北京时间：2017-08-15 16:55:24 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/methods",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 0,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.20038900000000003931432956960634328424930572509765625,
+	"namelookup_time": 6.3999999999999997103879156856720555879292078316211700439453125e-5,
+	"connect_time": 0,
+	"pretransfer_time": 0,
+	"size_upload": 0,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 0,
+	"download_content_length": -1,
+	"upload_content_length": -1,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "",
+	"certinfo": [
+	],
+	"primary_port": 0,
+	"local_ip": "",
+	"local_port": 0
+}
+####################################################################
+[ 北京时间：2017-08-15 16:55:24 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################
+[ 北京时间：2017-08-15 16:55:27 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/methods",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 0,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.20055400000000001003996885629021562635898590087890625,
+	"namelookup_time": 6.2999999999999999901988123607310399165726266801357269287109375e-5,
+	"connect_time": 0,
+	"pretransfer_time": 0,
+	"size_upload": 0,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 0,
+	"download_content_length": -1,
+	"upload_content_length": -1,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "",
+	"certinfo": [
+	],
+	"primary_port": 0,
+	"local_ip": "",
+	"local_port": 0
+}
+####################################################################
+[ 北京时间：2017-08-15 16:55:27 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################

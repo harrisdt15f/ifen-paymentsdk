@@ -1,0 +1,306 @@
+[ 北京时间：2017-08-15 16:37:01 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 223,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.06348800000000000276489942052648984827101230621337890625,
+	"namelookup_time": 4.60000000000000000359955121265187472090474329888820648193359375e-5,
+	"connect_time": 0.0126280000000000003357314426466473378241062164306640625,
+	"pretransfer_time": 0.0127419999999999998541166945642544305883347988128662109375,
+	"size_upload": 83,
+	"size_download": 41,
+	"speed_download": 645,
+	"speed_upload": 1307,
+	"download_content_length": -1,
+	"upload_content_length": 83,
+	"starttransfer_time": 0.063421000000000005147882120581925846636295318603515625,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46020
+}
+####################################################################
+[ 北京时间：2017-08-15 16:37:01 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################
+[ 北京时间：2017-08-15 16:38:17 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 222,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.5133769999999999722462007412104867398738861083984375,
+	"namelookup_time": 5.19999999999999967998688676917851125836023129522800445556640625e-5,
+	"connect_time": 0.0876099999999999934363614784160745330154895782470703125,
+	"pretransfer_time": 0.08768800000000000205435668476638966239988803863525390625,
+	"size_upload": 82,
+	"size_download": 41,
+	"speed_download": 79,
+	"speed_upload": 159,
+	"download_content_length": -1,
+	"upload_content_length": 82,
+	"starttransfer_time": 0.513314999999999965751840136363171041011810302734375,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46082
+}
+####################################################################
+[ 北京时间：2017-08-15 16:38:17 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################
+[ 北京时间：2017-08-15 16:40:20 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 222,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.215666999999999997594812839452060870826244354248046875,
+	"namelookup_time": 5.8000000000000000340005801291454190504737198352813720703125e-5,
+	"connect_time": 0.10466799999999999715161180802169837988913059234619140625,
+	"pretransfer_time": 0.10480000000000000426325641456060111522674560546875,
+	"size_upload": 82,
+	"size_download": 41,
+	"speed_download": 190,
+	"speed_upload": 380,
+	"download_content_length": -1,
+	"upload_content_length": 82,
+	"starttransfer_time": 0.215617000000000003101519041592837311327457427978515625,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46196
+}
+####################################################################
+[ 北京时间：2017-08-15 16:40:20 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################
+[ 北京时间：2017-08-15 16:41:28 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 221,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.2005409999999999970388131487197824753820896148681640625,
+	"namelookup_time": 5.59999999999999991599601567582311645310255698859691619873046875e-5,
+	"connect_time": 0.09822799999999999587263488365351804532110691070556640625,
+	"pretransfer_time": 0.098272999999999999243271986415493302047252655029296875,
+	"size_upload": 81,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 403,
+	"download_content_length": -1,
+	"upload_content_length": 81,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46252
+}
+####################################################################
+[ 北京时间：2017-08-15 16:41:28 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################
+[ 北京时间：2017-08-15 16:50:24 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 221,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.1964760000000000117470477789538563229143619537353515625,
+	"namelookup_time": 5.3000000000000000778023478975597981843748129904270172119140625e-5,
+	"connect_time": 0.09142200000000000326139115713885985314846038818359375,
+	"pretransfer_time": 0.091453000000000006508571459562517702579498291015625,
+	"size_upload": 81,
+	"size_download": 41,
+	"speed_download": 208,
+	"speed_upload": 412,
+	"download_content_length": -1,
+	"upload_content_length": 81,
+	"starttransfer_time": 0.1964529999999999887450030655600130558013916015625,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46622
+}
+####################################################################
+[ 北京时间：2017-08-15 16:50:24 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################
+[ 北京时间：2017-08-15 16:51:13 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": null,
+	"http_code": 0,
+	"header_size": 0,
+	"request_size": 0,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.200649999999999995026200849679298698902130126953125,
+	"namelookup_time": 2.4000000000000000608020578329870886591379530727863311767578125e-5,
+	"connect_time": 0,
+	"pretransfer_time": 0,
+	"size_upload": 0,
+	"size_download": 0,
+	"speed_download": 0,
+	"speed_upload": 0,
+	"download_content_length": -1,
+	"upload_content_length": -1,
+	"starttransfer_time": 0,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "",
+	"certinfo": [
+	],
+	"primary_port": 0,
+	"local_ip": "",
+	"local_port": 0
+}
+####################################################################
+[ 北京时间：2017-08-15 16:51:13 ]
+error_msg = "第三方支付平台链接失败 ( 0 )"
+####################################################################
+[ 北京时间：2017-08-15 16:56:19 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 222,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.0156840000000000000246469511466784751974046230316162109375,
+	"namelookup_time": 2.099999999999999883795211153003634763081208802759647369384765625e-5,
+	"connect_time": 0.0049989999999999999713562459646709612570703029632568359375,
+	"pretransfer_time": 0.005028000000000000350997009235243240254931151866912841796875,
+	"size_upload": 82,
+	"size_download": 41,
+	"speed_download": 2614,
+	"speed_upload": 5228,
+	"download_content_length": -1,
+	"upload_content_length": 82,
+	"starttransfer_time": 0.0156619999999999988393728500568613526411354541778564453125,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46910
+}
+####################################################################
+[ 北京时间：2017-08-15 16:56:19 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################
+[ 北京时间：2017-08-15 16:56:22 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 221,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.01349700000000000031652458432063212967477738857269287109375,
+	"namelookup_time": 6.4999999999999994305770190106130712592857889831066131591796875e-5,
+	"connect_time": 0.004360000000000000160149671302178830956108868122100830078125,
+	"pretransfer_time": 0.004466000000000000351441098445093302871100604534149169921875,
+	"size_upload": 81,
+	"size_download": 41,
+	"speed_download": 3037,
+	"speed_upload": 6001,
+	"download_content_length": -1,
+	"upload_content_length": 81,
+	"starttransfer_time": 0.0134360000000000000264233079860787256620824337005615234375,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46914
+}
+####################################################################
+[ 北京时间：2017-08-15 16:56:22 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################
+[ 北京时间：2017-08-15 16:56:39 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 221,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.0098700000000000003008704396734174224548041820526123046875,
+	"namelookup_time": 1.900000000000000104603825601401467793039046227931976318359375e-5,
+	"connect_time": 0.0018849999999999999568400799176970394910313189029693603515625,
+	"pretransfer_time": 0.001913999999999999902799974194067544885911047458648681640625,
+	"size_upload": 81,
+	"size_download": 41,
+	"speed_download": 4154,
+	"speed_upload": 8206,
+	"download_content_length": -1,
+	"upload_content_length": 81,
+	"starttransfer_time": 0.0098349999999999999922284388276239042170345783233642578125,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.170.37",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.171.14",
+	"local_port": 46942
+}
+####################################################################
+[ 北京时间：2017-08-15 16:56:39 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################

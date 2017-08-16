@@ -1,0 +1,68 @@
+[ 北京时间：2017-08-16 09:33:15 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 221,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.019391999999999999515498672053581685759127140045166015625,
+	"namelookup_time": 9.0000000000000005668208957754217180990963242948055267333984375e-5,
+	"connect_time": 0.0024410000000000000273947531326257376349531114101409912109375,
+	"pretransfer_time": 0.002593999999999999951649787277574432664550840854644775390625,
+	"size_upload": 81,
+	"size_download": 41,
+	"speed_download": 2114,
+	"speed_upload": 4176,
+	"download_content_length": -1,
+	"upload_content_length": 81,
+	"starttransfer_time": 0.0192569999999999998119282196284984820522367954254150390625,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.171.18",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.170.38",
+	"local_port": 59124
+}
+####################################################################
+[ 北京时间：2017-08-16 09:33:15 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################
+[ 北京时间：2017-08-16 09:33:17 ]
+error_msg = {
+	"url": "http:\/\/api.lgvpay\/payment\/bomao\/forward",
+	"content_type": "application\/json",
+	"http_code": 400,
+	"header_size": 368,
+	"request_size": 221,
+	"filetime": -1,
+	"ssl_verify_result": 0,
+	"redirect_count": 0,
+	"total_time": 0.01191900000000000077460260428097171825356781482696533203125,
+	"namelookup_time": 1.900000000000000104603825601401467793039046227931976318359375e-5,
+	"connect_time": 0.0030699999999999998123723088383485446684062480926513671875,
+	"pretransfer_time": 0.0030999999999999998910593657086565144709311425685882568359375,
+	"size_upload": 81,
+	"size_download": 41,
+	"speed_download": 3439,
+	"speed_upload": 6795,
+	"download_content_length": -1,
+	"upload_content_length": 81,
+	"starttransfer_time": 0.011900000000000000854871728961370536126196384429931640625,
+	"redirect_time": 0,
+	"redirect_url": "",
+	"primary_ip": "10.9.171.18",
+	"certinfo": [
+	],
+	"primary_port": 80,
+	"local_ip": "10.9.170.38",
+	"local_port": 59128
+}
+####################################################################
+[ 北京时间：2017-08-16 09:33:17 ]
+error_msg = "第三方支付平台链接失败 ( 400 )"
+####################################################################

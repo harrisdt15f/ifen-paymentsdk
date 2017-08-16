@@ -1,0 +1,64 @@
+{
+    "ok": true,
+    "data": [
+        {
+            "gateway": "banks",
+            "name": "网银快捷",
+            "banks": [
+                {
+                    "code": "CMBC",
+                    "limits": {
+                        "min": 2,
+                        "max": 100
+                    },
+                    "name": "招商银行",
+                    "icon": "http://api.lgvpay/icons/banks/spdb.png"
+                },
+                {
+                    "code": "ICBK",
+                    "limits": {
+                        "min": 2,
+                        "max": 100
+                    },
+                    "name": "工商银行",
+                    "icon": "http://api.lgvpay/icons/banks/spdb.png"
+                },
+                {
+                    "code": "BKCH",
+                    "limits": {
+                        "min": 2,
+                        "max": 100
+                    },
+                    "name": "中国银行",
+                    "icon": "http://api.lgvpay/icons/banks/spdb.png"
+                }
+            ],
+            "icon": "http://api.lgvpay/icons/gateways/banks.png",
+            "limits": {
+                "min": 2,
+                "max": 100
+            },
+            "tips": "单日充值总额无上限，充值无手续费"
+        },
+        {
+            "gateway": "unionpay",
+            "name": "银联快捷",
+            "icon": "http://api.lgvpay/icons/gateways/unionpay.png",
+            "limits": {
+                "min": 2,
+                "max": 100
+            },
+            "tips": ""
+        },
+        {
+            "gateway": "weixin",
+            "name": "微信",
+            "icon": "http://api.lgvpay/icons/gateways/alipay.png",
+            "limits": {
+                "min": 2,
+                "max": 100
+            },
+            "tips": "请在5分钟内完成转账，单日无次数上限"
+        }
+    ]
+}
