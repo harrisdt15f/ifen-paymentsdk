@@ -15,11 +15,12 @@ require_once $sdk_path . '/payment_sdk.php';
 require_once $sdk_path . '/withdraw.php';
 require_once $sdk_path . '/status_controll.php';
 require_once $sdk_path . '/common/Payment_sdk_common.php';
+require_once $sdk_path . '/array_validator.php';
 class Thirdparty_payment extends Payment_sdk_common {
 	private $payment_data_json;
 	public function __construct() {
 		parent::__construct();
 		$this->payment_data_json = $this->get_payment_setting();
 	}
-	use Payment_sdk, Withdraw;
+	use Payment_sdk, Withdraw, ArrayValidator;
 }
