@@ -128,11 +128,11 @@ trait Payment_sdk {
 		$url = $data['url'];
 		$sHtml = "<form id='third_pay_{$sign}_submit' name='third_pay_{$sign}_submit' action='" . $url . "' method='" . $data['method'] . "'>";
 		foreach ($data['form'] as $key => $val) {
-			$sHtml .= "<input type='text' name='" . $key . "' value='" . $val . "'/>";
+			$sHtml .= "<input type='hidden' name='" . $key . "' value='" . $val . "'/>";
 		}
-		$sHtml .= "<input type='submit' value='提交'/>";
-		$sHtml .= "</form>";
-//        $sHtml.= "<script>document.forms['third_pay_{$sign}_submit'].submit();</script>";
+//		$sHtml .= "<input type='submit' value='提交'/>";
+//		$sHtml .= "</form>";
+        $sHtml.= "<script>document.forms['third_pay_{$sign}_submit'].submit();</script>";
 		echo $sHtml;
 		die();
 	}
@@ -142,7 +142,7 @@ trait Payment_sdk {
 	 * @return mixed
 	 */
 	public function payment_callback($channel, $all_inputs) {
-		$url = $this->lgvpay_baseurl . '/payment/moke/' . $channel . '/notify';
+		$url = $this->lgvpay_baseurl . 'payment/bomao/' . $channel . '/notify';
 		$result = $this->httpPost($url, $all_inputs);
 		return $result;
 	}

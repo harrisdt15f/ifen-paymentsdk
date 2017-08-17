@@ -8,7 +8,6 @@
 class Payment_sdk_common {
 	protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $banks_sync, $comfirm_url, $order_prefix, $errors_filer, $order_path, $marker,$decrypt_method,$decrypt_password,$decrypt_options,$decrypt_iv;
 	private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension;
-
 	/**
 	 * Payment_sdk_common constructor.
 	 */
