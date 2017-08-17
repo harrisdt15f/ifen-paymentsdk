@@ -7,7 +7,7 @@
  */
 //#########################【 配置信息 】##################################
 return [
-    //平台名称
+	//平台名称
 	'platform' => 'bomao',
 	//本地数据库里面的银行编号(左边)名与第三方的编号(右边)
 	'banks' => [
@@ -33,13 +33,13 @@ return [
 		'weixin' => 'http://user.firecat.com/testwechat_confirm',
 		'unionpay' => 'http://user.firecat.com/testunionpay_confirm',
 	],
-    //第三方支付平台的链接配置
+	//第三方支付平台的链接配置
 	'lgv_pay_url' => [
 		'base_url' => 'http://api.lgvpay/',
 		'methods_url' => 'payment/bomao/methods',
 		'forward_url' => 'payment/bomao/forward',
 	],
-    //配置curl http 的时间毫秒
+	//配置curl http 的时间毫秒
 	'connection_time' => [
 		'millisecond' => 1000,
 	],
@@ -50,5 +50,4 @@ return [
 	],
 	//PHP 应用扩展检查配置
 	'pay_need_extensions' => ['curl', 'openssl'],
-
 ];

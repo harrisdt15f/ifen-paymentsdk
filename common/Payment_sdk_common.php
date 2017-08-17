@@ -6,9 +6,8 @@
  * Time: 下午4:21
  */
 class Payment_sdk_common {
-	protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $banks_sync, $comfirm_url, $order_prefix, $errors_filer,$order_path;
-	private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension, $marker;
-
+	protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $banks_sync, $comfirm_url, $order_prefix, $errors_filer, $order_path, $marker;
+	private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension;
 	/**
 	 * Payment_sdk_common constructor.
 	 */
@@ -18,23 +17,22 @@ class Payment_sdk_common {
 			echo $check_extension_result;die();
 		}
 	}
-
 	/**
 	 * initialize the parameter
 	 */
 	protected function init_params() {
-        $var_explode = explode('/', __FILE__);
-        array_pop($var_explode);
-        array_pop($var_explode);
-        $sdk_path = '';
-        foreach ($var_explode as $number) {
-            $sdk_path .= $number . '/';
-        }
+		$var_explode = explode('/', __FILE__);
+		array_pop($var_explode);
+		array_pop($var_explode);
+		$sdk_path = '';
+		foreach ($var_explode as $number) {
+			$sdk_path .= $number . '/';
+		}
 		$this->path = $sdk_path . "config/"; //配置文件所在目录
 		$config = $this->path . 'payment_sdk_config.php'; //配置文件名
 		$error_file = $this->path . 'error_info.php'; //错误配置
 		$this->sdk_logs_path = $sdk_path . "logs/";
-        $this->order_path = $sdk_path . "deposit_order/";
+		$this->order_path = $sdk_path . "deposit_order/";
 		$config = require_once $config;
 		$this->lgvpay_baseurl = $config['lgv_pay_url']['base_url'];
 		$this->lgvpay_methods_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['methods_url'];
@@ -48,25 +46,22 @@ class Payment_sdk_common {
 		$this->errors_filer = require_once $error_file;
 		$this->pay_need_extension = $config['pay_need_extensions'];
 	}
-
 	/**
 	 * @return bool|mixed
 	 */
 	protected function check_pay_need_extension() {
-        $pay_need_extension = $this->pay_need_extension;
-        if (is_array($pay_need_extension))
-        {
-            foreach ($pay_need_extension as $key => $extension_name) {
-                $result = $this->check_extension($extension_name);
-                if (is_array($result) && isset($result['error_msg'])) {
-                    return $result['error_msg'];
-                } else {
-                    return true;
-                }
-            }
-        }
+		$pay_need_extension = $this->pay_need_extension;
+		if (is_array($pay_need_extension)) {
+			foreach ($pay_need_extension as $key => $extension_name) {
+				$result = $this->check_extension($extension_name);
+				if (is_array($result) && isset($result['error_msg'])) {
+					return $result['error_msg'];
+				} else {
+					return true;
+				}
+			}
+		}
 	}
-
 	/**
 	 * check extension
 	 * @param $extension_name
@@ -79,7 +74,6 @@ class Payment_sdk_common {
 			return $this->error_return($error_str);
 		}
 	}
-
 	/**
 	 * @param $url
 	 * @return array|mixed
@@ -123,7 +117,6 @@ class Payment_sdk_common {
 		curl_close($ch);
 		return $info === true ? $output : $this->error_return($this->errors_filer['third_party_url_error'] . ' ( ' . $code . ' )');
 	}
-
 	/**
 	 * @param $connection
 	 * @param $code
@@ -151,15 +144,16 @@ class Payment_sdk_common {
 			return $url;
 		}
 	}
-
 	//############################【错误返回函数】##################################################
 	/**
 	 * @param $error_str
 	 * @param string $marker
 	 * @return array
 	 */
-	protected function error_return($error_str, $marker = '') {
-		unset($this->marker);
+	public function error_return($error_str, $marker = '') {
+		if (isset($this->marker)) {
+			unset($this->marker);
+		}
 		$suitable_class_and_function = debug_backtrace();
 		$error_reflect = array($error_str) ? [
 			'error_msg' => $this->json_en_uni($error_str, true),
@@ -183,6 +177,9 @@ class Payment_sdk_common {
 		$this->log_args_write($error_reflect, $flc_all);
 		//#########################################################
 		return $error_reflect;
+	}
+	public function sdk_throw_error($error_data) {
+		echo json_encode($error_data);die();
 	}
 	//###############################[Loggin]#########################################
 	/**
@@ -231,7 +228,6 @@ class Payment_sdk_common {
 		$status = $this->arr_2_log($log, $log_name, $flc_path); //writ log
 		return $status;
 	}
-
 	protected function create_directory_path($dir_path) {
 		if (!file_exists($dir_path)) {
 			$oldmask = umask(0);
@@ -277,7 +273,6 @@ class Payment_sdk_common {
 		if (empty($flc_path)) {
 			$flc_path = $this->sdk_logs_path;
 		}
-
 		$today = date('Y-m-d H:i:s', time());
 		$now = ' ' . $this->city . '时间：' . $this->dynamic_zone_time($today);
 		$name = $name . '_' . $this->dynamic_zone_time($today, 'y_m_d');
@@ -286,15 +281,13 @@ class Payment_sdk_common {
 		$this->create_log($log_path, $log);
 		return true;
 	}
-
-
-    /**
-     * 创建日志
-     * @param $log_path
-     * @param $log
-     * @return bool
-     */
-    protected function create_log($log_path, $log) {
+	/**
+	 * 创建日志
+	 * @param $log_path
+	 * @param $log
+	 * @return bool
+	 */
+	protected function create_log($log_path, $log) {
 		$oldmask = umask(0);
 		file_put_contents($log_path, $log, FILE_APPEND);
 		umask($oldmask);
@@ -384,7 +377,6 @@ class Payment_sdk_common {
 		}
 		return $result;
 	}
-
 	/**
 	 * Get Client user IP Address
 	 * @return string
