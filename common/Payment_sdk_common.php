@@ -6,8 +6,9 @@
  * Time: 下午4:21
  */
 class Payment_sdk_common {
-	protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $banks_sync, $comfirm_url, $order_prefix, $errors_filer, $order_path, $marker;
+	protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $banks_sync, $comfirm_url, $order_prefix, $errors_filer, $order_path, $marker,$decrypt_method,$decrypt_password,$decrypt_options,$decrypt_iv;
 	private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension;
+
 	/**
 	 * Payment_sdk_common constructor.
 	 */
@@ -31,20 +32,25 @@ class Payment_sdk_common {
 		$this->path = $sdk_path . "config/"; //配置文件所在目录
 		$config = $this->path . 'payment_sdk_config.php'; //配置文件名
 		$error_file = $this->path . 'error_info.php'; //错误配置
-		$this->sdk_logs_path = $sdk_path . "logs/";
+		$this->sdk_logs_path = $sdk_path . "logs/";//存日志路径
 		$this->order_path = $sdk_path . "deposit_order/";
-		$config = require_once $config;
-		$this->lgvpay_baseurl = $config['lgv_pay_url']['base_url'];
-		$this->lgvpay_methods_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['methods_url'];
+		$config = require_once $config;//获取配置文件
+		$this->lgvpay_baseurl = $config['lgv_pay_url']['base_url'];//第三方支付平台地址
+		$this->lgvpay_methods_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['methods_url'];//第三方支付开启信息获取链接
 		$this->lgvpay_forward_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['forward_url'];
-		$this->banks_sync = $config['banks'];
+		//第三方支付平台提交订单地址
+		$this->banks_sync = $config['banks'];//第三方平台支付与产品平台银行同步
 		$this->comfirm_url = $config['confirm_internal'];
-		$this->order_prefix = $config['platform'];
+		$this->order_prefix = $config['platform'];//订单前缀
 		$this->millisecond = $config['connection_time']['millisecond']; //获取链接毫秒
-		$this->city = $config['logging_timezone']['city'];
-		$this->timezone = $config['logging_timezone']['timezone'];
-		$this->errors_filer = require_once $error_file;
-		$this->pay_need_extension = $config['pay_need_extensions'];
+		$this->city = $config['logging_timezone']['city'];//地区配置
+		$this->timezone = $config['logging_timezone']['timezone'];//时间戳配置
+		$this->errors_filer = require_once $error_file;//错误信息代替显示配置
+		$this->pay_need_extension = $config['pay_need_extensions'];//PHP需要扩展配置
+        $this->decrypt_method= $config['decrypt']['method'];
+        $this->decrypt_password= $config['decrypt']['password'];
+        $this->decrypt_options= $config['decrypt']['options'];
+        $this->decrypt_iv= $config['decrypt']['iv'];
 	}
 	/**
 	 * @return bool|mixed

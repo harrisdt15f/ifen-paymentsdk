@@ -50,4 +50,11 @@ return [
 	],
 	//PHP 应用扩展检查配置
 	'pay_need_extensions' => ['curl', 'openssl'],
+    //open_ssl 解密配置
+    'decrypt'=>[
+        'method'=>'AES-256-CBC',
+        'password'=>'+OSqlHSlaH1JgXLc+6g4X3iIp2jQJSOF28lSEpE4CZgLQ5E27MBtbxIhrrXvBUxG',
+        'options'=>OPENSSL_RAW_DATA,
+        'iv'=>'8D0C7xA1Pfy3Ml+6',
+    ]
 ];

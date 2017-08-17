@@ -146,4 +146,16 @@ trait Payment_sdk {
 		$result = $this->httpPost($url, $all_inputs);
 		return $result;
 	}
+
+    /**
+     * 回调返回数据时用 openssl解密，密码等在配置文件配置即可
+     * @param $content
+     * @return mixed
+     */
+    public function decrypt_content($content) {
+		$ctx = base64_decode($content);
+		$decrypt = json_decode(openssl_decrypt($ctx, $this->decrypt_method, $this->decrypt_password, $this->decrypt_options, $this->decrypt_iv));
+		return $decrypt;
+
+	}
 }
