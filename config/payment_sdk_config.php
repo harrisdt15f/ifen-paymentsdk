@@ -27,17 +27,11 @@ return [
 		'CEB' => 'EVER',
 		'PSBC' => 'PSBC',
 	],
-	//网站确认后要存数据的控制器路由
-	'confirm_internal' => [
-		'banks' => 'http://user.firecat.com/testnetbank_confirm',
-		'weixin' => 'http://user.firecat.com/testwechat_confirm',
-		'unionpay' => 'http://user.firecat.com/testunionpay_confirm',
-	],
 	//第三方支付平台的链接配置
 	'lgv_pay_url' => [
 		'base_url' => 'http://api.lgvpay/',
-		'methods_url' => 'payment/bomao/methods',
-		'forward_url' => 'payment/bomao/forward',
+		'methods_url' => 'deposit/bomao/methods',
+		'forward_url' => 'deposit/bomao/forward',
 	],
 	//配置curl http 的时间毫秒
 	'connection_time' => [

@@ -142,7 +142,7 @@ trait Payment_sdk {
 	 * @return mixed
 	 */
 	public function payment_callback($channel, $all_inputs) {
-		$url = $this->lgvpay_baseurl . 'payment/bomao/' . $channel . '/notify';
+		$url = $this->lgvpay_baseurl . 'deposit/bomao/' . $channel . '/notify';
 		$result = $this->httpPost($url, $all_inputs);
 		return $result;
 	}
