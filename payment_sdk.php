@@ -57,7 +57,6 @@ trait Payment_sdk {
 //              }
 					$final_data['available_gateway_and_name'] = array_combine($final_data['gate_ways'], $final_data['gate_ways_cnname']); //for $aTabList usage in bank_tab blade
 					$final_data['banks_for_sync'] = $this->banks_sync;
-					$final_data['confirm_internal'] = $this->comfirm_url;
 					$final_data['order_prefix'] = $this->order_prefix;
 				}
 				unset($final_data['gate_ways_cnname'], $final_data['gate_ways_image']);

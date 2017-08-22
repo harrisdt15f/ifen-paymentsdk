@@ -22,5 +22,5 @@ class Thirdparty_payment extends Payment_sdk_common {
 		parent::__construct();
 		$this->payment_data_json = $this->get_payment_setting();
 	}
-	use Payment_sdk, Withdraw, ArrayValidator;
+	use Payment_sdk, Withdraw;
 }

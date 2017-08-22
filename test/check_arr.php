@@ -9,7 +9,7 @@ include_once '../Thirdparty_payment.php';
 $aa = new Thirdparty_payment();
 
 $input = [
-    'username' => 'aaa',
+    'username' => 'aa',
 
 ];
 
