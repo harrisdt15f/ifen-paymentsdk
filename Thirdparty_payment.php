@@ -12,7 +12,7 @@ foreach ($var_explode as $number) {
 	$sdk_path .= $number . '/';
 }
 require_once $sdk_path . '/payment_sdk.php';
-require_once $sdk_path . '/withdraw.php';
+require_once $sdk_path . '/withdraw_sdk.php';
 require_once $sdk_path . '/status_controll.php';
 require_once $sdk_path . '/common/Payment_sdk_common.php';
 class Thirdparty_payment extends Payment_sdk_common {
@@ -21,5 +21,5 @@ class Thirdparty_payment extends Payment_sdk_common {
 		parent::__construct();
 		$this->payment_data_json = $this->get_payment_setting();
 	}
-	use Payment_sdk, Withdraw;
+	use Payment_sdk, Withdraw_sdk;
 }

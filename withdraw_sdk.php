@@ -9,8 +9,11 @@ $var_explode = explode('/', __FILE__);
 array_pop($var_explode);
 $sdk_path = '';
 foreach ($var_explode as $number) {
-	$sdk_path .= $number . '/';
+    $sdk_path .= $number . '/';
 }
+
 require_once $sdk_path . '/common/Payment_sdk_common.php';
-trait Withdraw {
+
+trait Withdraw_sdk{
+
 }

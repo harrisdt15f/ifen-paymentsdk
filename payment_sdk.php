@@ -60,6 +60,7 @@ trait Payment_sdk
 //              }
                     $final_data['available_gateway_and_name'] = array_combine($final_data['gate_ways'], $final_data['gate_ways_cnname']); //for $aTabList usage in bank_tab blade
                     $final_data['banks_for_sync'] = $this->banks_sync;
+                    $final_data['net_banks_for_sync'] = $this->net_banks_sync;
                     $final_data['order_prefix'] = $this->order_prefix;
                 }
                 unset($final_data['gate_ways_cnname'], $final_data['gate_ways_image']);
@@ -95,7 +96,7 @@ trait Payment_sdk
             ];
             if (isset($order_params['bank'])) //如果是 网银快捷就加银行编码
             {
-                $forward_arr['bank'] =$deposit_order['bank'];
+                $forward_arr['bank'] = $deposit_order['bank'];
             }
             header("Content-Type:text/html;charset=utf-8");
             $url = $this->lgvpay_forward_url;
@@ -108,11 +109,11 @@ trait Payment_sdk
                 }
             } else {
                 $this->marker = __FUNCTION__;
-                return $this->error_return($this->errors_filer['third_party_payment_confirm_error']);
+                return isset($result['error_msg']) ? $this->error_return($result['error_msg']) : $this->error_return($this->errors_filer['third_party_payment_confirm_error']);
             }
         } else {
             $this->marker = __FUNCTION__;
-            return $this->error_return($this->errors_filer['third_party_data_error']);
+            return isset($payment_data_json['error_msg']) ? $this->error_return($payment_data_json['error_msg']) : $this->error_return($this->errors_filer['third_party_data_error']);
         }
     }
 
@@ -121,30 +122,30 @@ trait Payment_sdk
      * @param $gateway
      * @return string
      */
-    public function getDepositOrderNum($gateway='')
+    public function getDepositOrderNum($gateway = '')
     {
         // return $this->order_prefix . uniqid(mt_rand());
         switch ($gateway) {
             case 'banks':
-                $order_no = $this->order_prefix .'BK'. $this->RandomString(3) . time();
+                $order_no = $this->order_prefix . 'BK' . $this->RandomString(3) . time();
                 break;
             case 'weixin':
-                $order_no = $this->order_prefix .'WX'. $this->RandomString(3) . time();
+                $order_no = $this->order_prefix . 'WX' . $this->RandomString(3) . time();
                 break;
             case 'unionpay':
-                $order_no = $this->order_prefix .'UN'. $this->RandomString(3) . time();
+                $order_no = $this->order_prefix . 'UN' . $this->RandomString(3) . time();
                 break;
             case 'alipay':
-                $order_no = $this->order_prefix .'AL'. $this->RandomString(3) . time();
+                $order_no = $this->order_prefix . 'AL' . $this->RandomString(3) . time();
                 break;
             case 'qq':
-                $order_no = $this->order_prefix .'QQ'. $this->RandomString(3) . time();
+                $order_no = $this->order_prefix . 'QQ' . $this->RandomString(3) . time();
                 break;
             case 'baidu':
-                $order_no = $this->order_prefix .'BD'. $this->RandomString(3) . time();
+                $order_no = $this->order_prefix . 'BD' . $this->RandomString(3) . time();
                 break;
             case 'jd':
-                $order_no = $this->order_prefix .'JD'. $this->RandomString(3) . time();
+                $order_no = $this->order_prefix . 'JD' . $this->RandomString(3) . time();
                 break;
             default:
                 $order_no = $this->order_prefix . $this->RandomString() . time();
@@ -188,7 +189,7 @@ trait Payment_sdk
      */
     public function payment_callback($channel, $all_inputs)
     {
-        $url = $this->lgvpay_baseurl . 'deposit/bomao/' . $channel . '/notify';
+        $url = str_replace('~channel~',$channel,$this->lgvpay_notify_url);
         $result = $this->httpPost($url, $all_inputs);
         return $result;
     }

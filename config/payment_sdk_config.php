@@ -8,7 +8,7 @@
 //#########################【 配置信息 】##################################
 return [
 	//平台名称
-	'platform' => 'bomao',
+	'platform' => 'qupai',
 	//本地数据库里面的银行编号(左边)名与第三方的编号(右边)
 	'banks' => [
 		'ICBC' => 'ICBK',
@@ -27,11 +27,20 @@ return [
 		'CEB' => 'EVER',
 		'PSBC' => 'PSBC',
 	],
+    'net_banks' => [
+        'QQ' => 'qq',
+        'SHENGPAY' => '',//盛付通
+        'TENPAY' => '', //财付通
+        'WEIXIN' => 'weixin',//微信
+        'YLZF' => 'unionpay',//银联支付
+        'ALIPAY'=> 'alipay' //支付宝
+    ],
 	//第三方支付平台的链接配置
 	'lgv_pay_url' => [
 		'base_url' => 'http://api.lgvpay/',
-		'methods_url' => 'deposit/bomao/methods',
-		'forward_url' => 'deposit/bomao/forward',
+		'methods_url' => 'deposit/qupai/methods',
+		'forward_url' => 'deposit/qupai/forward',
+        'notify_url' => 'deposit/qupai/~channel~/notify',
 	],
 	//配置curl http 的时间毫秒
 	'connection_time' => [
@@ -47,7 +56,7 @@ return [
     //open_ssl 解密配置
     'decrypt'=>[
         'method'=>'AES-256-CBC',
-        'password'=>'+OSqlHSlaH1JgXLc+6g4X3iIp2jQJSOF28lSEpE4CZgLQ5E27MBtbxIhrrXvBUxG',
+        'password'=>'Lk6nNYlBaA2L/87h0eXRXMnfKv8kakaESh3JwoOUbaY0tZR7eycyDzbkRB+JIuDD',
         'options'=>OPENSSL_RAW_DATA,
         'iv'=>'8D0C7xA1Pfy3Ml+6',
     ]
