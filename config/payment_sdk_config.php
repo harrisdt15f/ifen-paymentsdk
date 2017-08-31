@@ -37,14 +37,14 @@ return [
     ],
 	//第三方支付平台的链接配置
 	'lgv_pay_url' => [
-		'base_url' => 'http://api.lgvpay/',
+		'base_url' => 'https://qpyl.uas-gw.info/',
 		'methods_url' => 'deposit/qupai/methods',
 		'forward_url' => 'deposit/qupai/forward',
         'notify_url' => 'deposit/qupai/~channel~/notify',
 	],
 	//配置curl http 的时间毫秒
 	'connection_time' => [
-		'millisecond' => 1000,
+		'millisecond' => 3000,
 	],
 	//日志记录用的时间戳
 	'logging_timezone' => [

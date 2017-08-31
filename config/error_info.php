@@ -10,6 +10,7 @@ return [
 	'third_party_data_error' => '第三方返回数据异常',
 	'third_party_data_empty' => '第三方返回数据异常',
     'third_party_data_close' => '第三方关闭数据',
+    'third_party_no_qr_code'=> '第三方扫码无返回',
 	'third_party_payment_confirm_error' => '第三方提交数据无返回',
 	'blank_url' => 'url为空',
 	'url_format_error' => 'url格式不对',

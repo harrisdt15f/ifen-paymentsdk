@@ -8,6 +8,7 @@
 include_once '../Thirdparty_payment.php';
 $aa = new Thirdparty_payment();
 $result = $aa->get_payment_setting();
+var_dump($result);die();
 $result = json_decode($result, true);
 
 //{"content":"XTiwbANeyaX/Q56eIq/vAi7HwnohUw0oE/oHHjepoyF6DVPB5SVbNn9xnGhxknqZPzCosHTZRyaPF55FwKlfDjX9fUgWttxttcezOc1oBx4="}

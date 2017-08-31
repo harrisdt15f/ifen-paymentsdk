@@ -8,7 +8,7 @@
 class Payment_sdk_common
 {
     protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $banks_sync, $net_banks_sync, $comfirm_url, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv;
-    private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension,$skd_pem;
+    private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension,$skd_pem,$skd_crt;
 
     /**
      * Payment_sdk_common constructor.
@@ -40,7 +40,8 @@ class Payment_sdk_common
         $this->sdk_logs_path = $sdk_path . "logs/";//存日志路径
         $this->order_path = $sdk_path . "deposit_order/";
         $config = require_once $config;//获取配置文件
-        $this->skd_pem = $this->path.'UAS-Tester.pem';
+        $this->skd_pem = $this->path.'c-qpyl.pem';
+        $this->skd_crt = $this->path.'ca.crt';
         $this->order_prefix = $config['platform'];//订单前缀
         $this->lgvpay_baseurl = $config['lgv_pay_url']['base_url'];//第三方支付平台地址
         $this->lgvpay_methods_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['methods_url'];//第三方支付开启信息获取链接
@@ -112,15 +113,22 @@ class Payment_sdk_common
      */
     protected function httpGet($url)
     {
-        $tempPemPath = $this->get_perm();
+//        $tempPemPath = $this->get_perm();
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
         curl_setopt($ch, CURLOPT_TIMEOUT_MS, $this->millisecond); //timeout in milliseconds
-        curl_setopt($ch, CURLOPT_SSLCERT, $tempPemPath);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+//        curl_setopt($ch, CURLOPT_SSLCERT, $tempPemPath);
+        //############
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_SSLCERT, $this->skd_pem);
+//        curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $cert_password);
+        curl_setopt($ch, CURLOPT_CAINFO, $this->skd_crt);
+        //###########
         $output = curl_exec($ch);
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
@@ -135,7 +143,7 @@ class Payment_sdk_common
      */
     protected function httpPost($url, $params)
     {
-        $tempPemPath = $this->get_perm();
+//        $tempPemPath = $this->get_perm();
         $postData = '';
         //create name value pairs seperated by &
         foreach ($params as $k => $v) {
@@ -150,9 +158,22 @@ class Payment_sdk_common
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
         curl_setopt($ch, CURLOPT_TIMEOUT_MS, $this->millisecond); //timeout in milliseconds
-        curl_setopt($ch, CURLOPT_SSLCERT, $tempPemPath);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+//        curl_setopt($ch, CURLOPT_SSLCERT, $tempPemPath);
+        //############
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_SSLCERT, $this->skd_pem);
+//        curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $cert_password);
+        curl_setopt($ch, CURLOPT_CAINFO, $this->skd_crt);
+        //###########
         $output = curl_exec($ch);
+        if(!$output)
+        {
+            echo "Curl Error: " . curl_error($ch);
+            var_dump($output);
+            var_dump(curl_getinfo($ch));die();
+        }
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
         curl_close($ch);

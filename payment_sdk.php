@@ -36,14 +36,14 @@ trait Payment_sdk
                 $final_data['gate_ways'] = [];
                 $final_data['gate_ways_cnname'] = [];
                 $final_data['gate_ways_image'] = [];
-                foreach ($payment_response_data as $key1 => $value1) {
+                foreach ($payment_response_data as $key1 => $value1) {//value2 is key inside of data
                     if (isset($value1['gateway'])) {
                         array_push($final_data['gate_ways'], $value1['gateway']);
                         if ($value1['gateway'] == 'banks') {
                             //loop banks array
-                            foreach ($value1['banks'] as $key2 => $value2) {
-                                $value2['currency_min'] = $value2['limits']['min'];
-                                $value2['currency_max'] = $value2['limits']['max'];
+                            foreach ($value1['banks'] as $key2 => $value2) {//value2 is key inside of banks
+                                $value2['currency_min'] = $value1['limits']['min'];
+                                $value2['currency_max'] = $value1['limits']['max'];
                                 $value2['tips'] = $value1['tips'];
                                 unset($value2['limits']);
                                 $final_data['payment_setting_data']['banks'][$value2['code']] = $value2;
@@ -104,7 +104,19 @@ trait Payment_sdk
             if (!empty($result) && !isset($result['error_msg'])) {
                 $payment_response = json_decode($result, true);
                 if (isset($payment_response['data'])) {
-                    $this->buildForm($payment_response['data']);
+                    if (isset($payment_response['data']['form']))
+                    {
+                        $this->buildForm($payment_response['data']);
+                    }
+                    else{
+                        if (isset($payment_response['data']['url']))
+                        {
+                            return $payment_response['data']['url'];
+                        }
+                        else{
+                            return $this->error_return($this->errors_filer['third_party_no_qr_code']);
+                        }
+                    }
                 } else {
                 }
             } else {
@@ -175,7 +187,7 @@ trait Payment_sdk
         $url = $data['url'];
         $sHtml = "<form id='third_pay_{$sign}_submit' name='third_pay_{$sign}_submit' action='" . $url . "' method='" . $data['method'] . "'>";
         foreach ($data['form'] as $key => $val) {
-            $sHtml .= "<input type='text' name='" . $key . "' value='" . $val . "'/>";
+            $sHtml .= "<input type='hidden' name='" . $key . "' value='" . $val . "'/>";
         }
         $sHtml .= "<script>document.forms['third_pay_{$sign}_submit'].submit();</script>";
         echo $sHtml;
