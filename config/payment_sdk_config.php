@@ -9,6 +9,8 @@
 return [
 	//平台名称
 	'platform' => 'qupai',
+    //订单前缀
+    'order_prefix' => 'qp',
 	//本地数据库里面的银行编号(左边)名与第三方的编号(右边)
 	'banks' => [
 		'ICBC' => 'ICBK',
@@ -41,6 +43,9 @@ return [
 		'methods_url' => 'deposit/qupai/methods',
 		'forward_url' => 'deposit/qupai/forward',
         'notify_url' => 'deposit/qupai/~channel~/notify',
+        'withdraw_url' => 'withdrawal/qupai/forward',
+        'deposit_order_search_url'=> 'deposit/qupai/order/~tx_no~',
+        'withdraw_order_search_url'=> 'withdrawal/qupai/order/~tx_no~'
 	],
 	//配置curl http 的时间毫秒
 	'connection_time' => [
@@ -56,7 +61,8 @@ return [
     //open_ssl 解密配置
     'decrypt'=>[
         'method'=>'AES-256-CBC',
-        'password'=>'Lk6nNYlBaA2L/87h0eXRXMnfKv8kakaESh3JwoOUbaY0tZR7eycyDzbkRB+JIuDD',
+//        'password'=>'Lk6nNYlBaA2L/87h0eXRXMnfKv8kakaESh3JwoOUbaY0tZR7eycyDzbkRB+JIuDD',
+        'password'=>'vCKUplCQBrlRzRNfS2DmKg/KCUofJlJiE6wYsMWxJ9h/Hkw4FsRbEWSM',
         'options'=>OPENSSL_RAW_DATA,
         'iv'=>'8D0C7xA1Pfy3Ml+6',
     ]

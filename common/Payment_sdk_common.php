@@ -7,7 +7,7 @@
  */
 class Payment_sdk_common
 {
-    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $banks_sync, $net_banks_sync, $comfirm_url, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv;
+    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url,$lgvpay_withdraw_url, $lgvpay_deposit_order_url,$lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $comfirm_url, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv;
     private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension,$skd_pem,$skd_crt;
 
     /**
@@ -42,11 +42,18 @@ class Payment_sdk_common
         $config = require_once $config;//获取配置文件
         $this->skd_pem = $this->path.'c-qpyl.pem';
         $this->skd_crt = $this->path.'ca.crt';
-        $this->order_prefix = $config['platform'];//订单前缀
+        $this->order_prefix = $config['order_prefix'];//订单前缀
+        $this->platform_name = $config['platform'];//订单前缀
+        //########## 【 url 】##############
         $this->lgvpay_baseurl = $config['lgv_pay_url']['base_url'];//第三方支付平台地址
         $this->lgvpay_methods_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['methods_url'];//第三方支付开启信息获取链接
         $this->lgvpay_forward_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['forward_url'];
         $this->lgvpay_notify_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['notify_url'];
+        //第三方支付提款链接
+        $this->lgvpay_withdraw_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['withdraw_url'];
+        $this->lgvpay_deposit_order_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['deposit_order_search_url'];
+        $this->lgvpay_withdraw_order_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['withdraw_order_search_url'];
+        //######################################
         //第三方支付平台提交订单地址
         $this->banks_sync = $config['banks'];//第三方平台支付与产品平台银行同步
         $this->net_banks_sync = $config['net_banks'];//第三方平台支付与产品平台数据库中的配置同步
@@ -130,6 +137,11 @@ class Payment_sdk_common
         curl_setopt($ch, CURLOPT_CAINFO, $this->skd_crt);
         //###########
         $output = curl_exec($ch);
+        if(!$output)
+        {
+            echo "Curl Error: " . curl_error($ch);
+            var_dump(curl_getinfo($ch));die();
+        }
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
         curl_close($ch);

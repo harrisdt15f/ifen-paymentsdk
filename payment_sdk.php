@@ -19,7 +19,7 @@ trait Payment_sdk
      * 获取目前开启的所有支付渠道
      * @return array|mixed|string
      */
-    public function get_payment_setting()
+    public function get_payment_setting_data()
     {
         header("Content-Type:text/html;charset=utf-8");
         $url = $this->lgvpay_methods_url;
@@ -73,6 +73,15 @@ trait Payment_sdk
             $this->marker = __FUNCTION__;
             return $this->error_return($this->errors_filer['third_party_data_empty']);
         }
+    }
+
+    /**
+     * 平台调用
+     * @return mixed
+     */
+    public function get_payment_setting()
+    {
+        return $this->payment_data_json;
     }
 
     /**
@@ -204,6 +213,25 @@ trait Payment_sdk
         $url = str_replace('~channel~',$channel,$this->lgvpay_notify_url);
         $result = $this->httpPost($url, $all_inputs);
         return $result;
+    }
+
+
+    /**
+     * 查询充值订单号与充值平台
+     * @param string $order_no
+     * @return mixed
+     */
+    public function deposit_order_search($order_no='')
+    {
+        if (empty($order_no))
+        {
+            return null;
+        }
+        else{
+            $url = str_replace('~tx_no~',$order_no,$this->lgvpay_deposit_order_url);
+            $result = $this->httpGet($url);
+            return $result;
+        }
     }
 
     /**
