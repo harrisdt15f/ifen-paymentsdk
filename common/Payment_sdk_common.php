@@ -155,7 +155,6 @@ class Payment_sdk_common
      */
     protected function httpPost($url, $params)
     {
-//        $tempPemPath = $this->get_perm();
         $postData = '';
         //create name value pairs seperated by &
         foreach ($params as $k => $v) {
