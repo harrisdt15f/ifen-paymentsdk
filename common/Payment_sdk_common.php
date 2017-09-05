@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * author: harris
@@ -7,8 +8,8 @@
  */
 class Payment_sdk_common
 {
-    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url,$lgvpay_withdraw_url, $lgvpay_deposit_order_url,$lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $comfirm_url, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv;
-    private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension,$skd_pem,$skd_crt;
+    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $lgvpay_withdraw_url, $lgvpay_deposit_order_url, $lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $comfirm_url, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv;
+    private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension, $skd_pem, $skd_crt;
 
     /**
      * Payment_sdk_common constructor.
@@ -40,8 +41,8 @@ class Payment_sdk_common
         $this->sdk_logs_path = $sdk_path . "logs/";//存日志路径
         $this->order_path = $sdk_path . "deposit_order/";
         $config = require_once $config;//获取配置文件
-        $this->skd_pem = $this->path.'c-qpyl.pem';
-        $this->skd_crt = $this->path.'ca.crt';
+        $this->skd_pem = $this->path . $config['pem_cert']; //pem 证书 需放入sdk config 目录下
+        $this->skd_crt = $this->path . $config['ca_cert'];//ca 证书 需放入sdk config 目录下
         $this->order_prefix = $config['order_prefix'];//订单前缀
         $this->platform_name = $config['platform'];//订单前缀
         //########## 【 url 】##############
@@ -137,10 +138,10 @@ class Payment_sdk_common
         curl_setopt($ch, CURLOPT_CAINFO, $this->skd_crt);
         //###########
         $output = curl_exec($ch);
-        if(!$output)
-        {
+        if (!$output) {
             echo "Curl Error: " . curl_error($ch);
-            var_dump(curl_getinfo($ch));die();
+            var_dump(curl_getinfo($ch));
+            die();
         }
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
@@ -155,6 +156,7 @@ class Payment_sdk_common
      */
     protected function httpPost($url, $params)
     {
+//        $tempPemPath = $this->get_perm();
         $postData = '';
         //create name value pairs seperated by &
         foreach ($params as $k => $v) {
@@ -179,11 +181,11 @@ class Payment_sdk_common
         curl_setopt($ch, CURLOPT_CAINFO, $this->skd_crt);
         //###########
         $output = curl_exec($ch);
-        if(!$output)
-        {
+        if (!$output) {
             echo "Curl Error: " . curl_error($ch);
             var_dump($output);
-            var_dump(curl_getinfo($ch));die();
+            var_dump(curl_getinfo($ch));
+            die();
         }
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
