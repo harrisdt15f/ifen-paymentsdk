@@ -98,6 +98,7 @@ trait Payment_sdk
             $deposit_order['ip'] = $this->get_client_ip(); //获取用户IP地址
             //##################【 准备要提交到第三方平台 】#################################
             $forward_arr = [
+                'return_url'=>$deposit_order['return_url'].'/deposit/return',
                 'order_no' => $deposit_order['order_no'],
                 'amount' => $deposit_order['amount'],
                 'gateway' => $deposit_order['gateway'],

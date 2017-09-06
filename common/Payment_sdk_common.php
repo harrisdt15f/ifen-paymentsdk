@@ -139,9 +139,10 @@ class Payment_sdk_common
         //###########
         $output = curl_exec($ch);
         if (!$output) {
-            echo "Curl Error: " . curl_error($ch);
-            var_dump(curl_getinfo($ch));
-            die();
+            $this->error_return(curl_error($ch));
+            $this->marker = __FUNCTION__;
+            $this->curl_header_check($ch, $code);
+            echo "请联系客服";die();
         }
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
@@ -182,10 +183,11 @@ class Payment_sdk_common
         //###########
         $output = curl_exec($ch);
         if (!$output) {
-            echo "Curl Error: " . curl_error($ch);
-            var_dump($output);
-            var_dump(curl_getinfo($ch));
-            die();
+            $this->error_return(curl_error($ch));
+            $this->error_return($postData);
+            $this->marker = __FUNCTION__;
+            $this->curl_header_check($ch, $code);
+            echo "请联系客服 原因";die();
         }
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
