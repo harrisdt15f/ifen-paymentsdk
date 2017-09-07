@@ -15,4 +15,17 @@ return [
     'url_format_error' => 'url格式不对',
     'extension_not_loaded' => '扩展还没安装，请安装再重试',
     'Invalid deposit fields' => '充值参数不对',
+    //##########【对应系统错误】######################
+    'unsupported_gateway'=> '网关不支持',
+    'unsupported_bank'=> '银行不支持',
+    'invalid_fields'=> '无效字段',
+    'invalid_amount'=> '无效金额',
+    'invalid_bank_code'=> '无效银行',
+    'invalid_api_response'=> '无效API响应',
+    'invalid_json_response'=> '无效JSON响应',
+    'invalid_signature'=> '无效签名',
+    'invalid_platform'=> '无效平台',
+    'channels_is_unavailable'=> '渠道不可用',
+    'balance_is_not_enough'=> '余额不足',
+    'withdrawal_failed'=> '提现失败',
 ];

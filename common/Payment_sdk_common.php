@@ -142,12 +142,13 @@ class Payment_sdk_common
             $this->error_return(curl_error($ch));
             $this->marker = __FUNCTION__;
             $this->curl_header_check($ch, $code);
-            echo "请联系客服";die();
+            $this->sdk_throw_error("请联系客服");
         }
+        $return_error = json_decode($output, true);
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
         curl_close($ch);
-        return $info === true ? $output : $this->error_return($this->errors_filer['third_party_url_error'] . ' ( ' . $code . ' )');
+        return $info === true ? $output : $this->error_return($error = isset($this->errors_filer[$return_error['error']]) ? $this->errors_filer[$return_error['error']] : $this->errors_filer['third_party_url_error']);
     }
 
     /**
@@ -182,17 +183,20 @@ class Payment_sdk_common
         curl_setopt($ch, CURLOPT_CAINFO, $this->skd_crt);
         //###########
         $output = curl_exec($ch);
+
         if (!$output) {
             $this->error_return(curl_error($ch));
             $this->error_return($postData);
             $this->marker = __FUNCTION__;
             $this->curl_header_check($ch, $code);
-            echo "请联系客服 原因";die();
+            $this->sdk_throw_error("请联系客服 原因");
         }
+        $return_error = json_decode($output, true);
         $this->marker = __FUNCTION__;
         $info = $this->curl_header_check($ch, $code);
         curl_close($ch);
-        return $info === true ? $output : $this->error_return($this->errors_filer['third_party_url_error'] . ' ( ' . $code . ' )');
+        //##
+        return $info === true ? $output : $this->error_return($error = isset($this->errors_filer[$return_error['error']]) ? $this->errors_filer[$return_error['error']] : $this->errors_filer['third_party_url_error']);
     }
 
     /**
@@ -264,8 +268,76 @@ class Payment_sdk_common
 
     public function sdk_throw_error($error_data)
     {
-//		echo json_encode($error_data);die();
-        echo $this->json_en_uni($error_data, true);
+        if (is_array($error_data)) {
+            $error_data = str_replace('\"', '', $error_data['error_msg']);
+            $error_data = str_replace('"', '', $error_data);
+        }
+
+        $html = <<<html
+        <!DOCTYPE html>
+        <html>
+        <style type="text/css">
+        fieldset {
+            width:50%;
+            margin:2em auto;
+            background:#e3e3e3;
+            border:2px solid blue;
+            border-radius:5px;
+            padding:20px;
+            position:relative;
+        }
+        legend {
+            font-weight:bold;
+            position:absolute;
+            left:10px;
+            top:-1.1em;
+            height:2em;
+            line-height:2em;
+            padding:0 10px;
+        }
+        legend:after {
+            position:absolute;
+            content:" ";
+            height:3px;
+            left:0;
+            right:0;
+            top:50%;
+            background:#fff;
+        }
+        legend b {
+            position:relative;
+            z-index:2;
+        }
+        #btn{
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        position: absolute;
+        color: white;
+        background:#3db9ec;
+        width:100px;
+        height:50px;
+        z-index:3;
+        }
+        </style>
+        </head>
+        <body>
+                <fieldset>
+                        <legend><button id="btn" onclick="goBack()">关闭回去</button></legend>
+                        <div align="center">错误信息</div>
+                        <div align="center"><h1>~error~</h1></div>
+                </fieldset>
+        <script>
+        function goBack() {
+            window.close();
+        }
+        </script>
+        
+        </body>
+        </html>
+html;
+        $error_data = str_replace('~error~', $error_data, $html);
+        echo $error_data;
         die();
     }
     //###############################[Loggin]#########################################

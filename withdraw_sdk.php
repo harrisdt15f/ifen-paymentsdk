@@ -29,7 +29,7 @@ trait Withdraw_sdk
             'card_holder' => $data['card_holder'],
             'holder_phone' => $data['holder_phone'],
             'holder_id' => $data['holder_id'],
-            'ip' => $this->get_client_ip(),
+            /*'ip' => $this->get_client_ip(),*/
         ];
         $url = $this->lgvpay_withdraw_url;
         $result = $this->httpPost($url, $forward_arr);

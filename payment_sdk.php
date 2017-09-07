@@ -98,9 +98,9 @@ trait Payment_sdk
             $deposit_order['ip'] = $this->get_client_ip(); //获取用户IP地址
             //##################【 准备要提交到第三方平台 】#################################
             $forward_arr = [
-                'return_url'=>$deposit_order['return_url'].'/deposit/return',
+                'return_url' => $deposit_order['return_url'] . '/deposit/return',
                 'order_no' => $deposit_order['order_no'],
-                'amount' => $deposit_order['amount'],
+                'amount' => number_format($deposit_order['amount'], 2, '.', ''),
                 'gateway' => $deposit_order['gateway'],
                 'ip' => $deposit_order['ip'],
             ];
@@ -114,16 +114,12 @@ trait Payment_sdk
             if (!empty($result) && !isset($result['error_msg'])) {
                 $payment_response = json_decode($result, true);
                 if (isset($payment_response['data'])) {
-                    if (isset($payment_response['data']['form']))
-                    {
+                    if (isset($payment_response['data']['form'])) {
                         $this->buildForm($payment_response['data']);
-                    }
-                    else{
-                        if (isset($payment_response['data']['url']))
-                        {
+                    } else {
+                        if (isset($payment_response['data']['url'])) {
                             return $payment_response['data']['url'];
-                        }
-                        else{
+                        } else {
                             return $this->error_return($this->errors_filer['third_party_no_qr_code']);
                         }
                     }
@@ -211,7 +207,7 @@ trait Payment_sdk
      */
     public function payment_callback($channel, $all_inputs)
     {
-        $url = str_replace('~channel~',$channel,$this->lgvpay_notify_url);
+        $url = str_replace('~channel~', $channel, $this->lgvpay_notify_url);
         $result = $this->httpPost($url, $all_inputs);
         return $result;
     }
@@ -222,14 +218,12 @@ trait Payment_sdk
      * @param string $order_no
      * @return mixed
      */
-    public function deposit_order_search($order_no='')
+    public function deposit_order_search($order_no = '')
     {
-        if (empty($order_no))
-        {
+        if (empty($order_no)) {
             return null;
-        }
-        else{
-            $url = str_replace('~tx_no~',$order_no,$this->lgvpay_deposit_order_url);
+        } else {
+            $url = str_replace('~tx_no~', $order_no, $this->lgvpay_deposit_order_url);
             $result = $this->httpGet($url);
             return $result;
         }
