@@ -28,4 +28,6 @@ return [
     'channels_is_unavailable'=> '渠道不可用',
     'balance_is_not_enough'=> '余额不足',
     'withdrawal_failed'=> '提现失败',
+    'deposit_order_duplicated'=> '充值订单重复',
+    'withdrawal_order_duplicated'=> '提现订单重复',
 ];

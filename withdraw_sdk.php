@@ -16,6 +16,10 @@ require_once $sdk_path . '/common/Payment_sdk_common.php';
 
 trait Withdraw_sdk
 {
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function widthdraw_forward($data)
     {
         $forward_arr = [

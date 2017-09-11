@@ -84,9 +84,11 @@ trait Payment_sdk
         return $this->payment_data_json;
     }
 
+
     /**
      * 提交订单生成订单数据
      * @param $order_params
+     * @return mixed
      */
     public function payment_forward($order_params)
     {
