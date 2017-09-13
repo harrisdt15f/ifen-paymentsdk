@@ -75,7 +75,6 @@ trait Payment_sdk
         }
     }
 
-
     /**
      * 提交订单生成订单数据
      * @param $order_params
@@ -194,13 +193,13 @@ trait Payment_sdk
     }
 
     /**
-     * @param $channel
+     * @param $tx_no
      * @param $all_inputs
      * @return mixed
      */
-    public function payment_callback($channel, $all_inputs)
+    public function payment_callback($tx_no, $all_inputs)
     {
-        $url = str_replace('~channel~', $channel, $this->lgvpay_notify_url);
+        $url = str_replace('~tx_no~', $tx_no, $this->lgvpay_notify_url);
         $result = $this->httpPost($url, $all_inputs);
         return $result;
     }

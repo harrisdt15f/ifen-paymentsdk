@@ -46,7 +46,8 @@ return [
 		'base_url' => 'https://qupa.uas-gw.info/', //https://qpyl.uas-gw.info/ 支付系统地址
 		'methods_url' => 'deposit/qupai/methods',//支付系统获取开关地址
 		'forward_url' => 'deposit/qupai/forward',//支付系统提交地址
-        'notify_url' => 'deposit/qupai/~channel~/notify',//支付系统通知地址
+        'notify_url' => 'deposit/notify/~tx_no~',//充值时支付系统通知地址
+        //'withdraw_notify_url' => 'withdraw/notify/~tx_no~',//提款时支付系统通知地址
         'withdraw_url' => 'withdrawal/qupai/forward',//支付系统提款地址
         'deposit_order_search_url'=> 'deposit/qupai/order/~tx_no~',//支付系统充值对账查询地址
         'withdraw_order_search_url'=> 'withdrawal/qupai/order/~tx_no~',//支付系统提现对账查询地址
