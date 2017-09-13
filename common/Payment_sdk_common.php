@@ -8,7 +8,7 @@
  */
 class Payment_sdk_common
 {
-    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $lgvpay_withdraw_url, $lgvpay_deposit_order_url, $lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv;
+    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $lgvpay_withdraw_url, $lgvpay_deposit_order_url, $lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv,$payment_data_json;
     private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension, $skd_pem, $skd_crt;
 
     /**

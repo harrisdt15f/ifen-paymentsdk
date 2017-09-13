@@ -16,10 +16,10 @@ require_once $sdk_path . '/common/Payment_sdk_common.php';
 trait Payment_sdk
 {
     /**
-     * 获取目前开启的所有支付渠道
+     * 获取目前开启的所有支付渠道 平台调用
      * @return array|mixed|string
      */
-    public function get_payment_setting_data()
+    public function get_payment_setting()
     {
         header("Content-Type:text/html;charset=utf-8");
         $url = $this->lgvpay_methods_url;
@@ -42,15 +42,15 @@ trait Payment_sdk
                         if ($value1['gateway'] == 'banks') {
                             //loop banks array
                             foreach ($value1['banks'] as $key2 => $value2) {//value2 is key inside of banks
-                                $value2['currency_min'] = $value1['limits']['min'];
-                                $value2['currency_max'] = $value1['limits']['max'];
+                                $value2['currency_min'] = isset($value1['limits']['min']) ? $value1['limits']['min'] : 0;
+                                $value2['currency_max'] = isset($value1['limits']['max']) ? $value1['limits']['max'] : 0;
                                 $value2['tips'] = $value1['tips'];
                                 unset($value2['limits']);
                                 $final_data['payment_setting_data']['banks'][$value2['code']] = $value2;
                             }
                         } else {
-                            $value1['currency_min'] = $value1['limits']['min'];
-                            $value1['currency_max'] = $value1['limits']['max'];
+                            $value1['currency_min'] = isset($value1['limits']['min']) ? $value1['limits']['min'] : 0;
+                            $value1['currency_max'] = isset($value1['limits']['max']) ? $value1['limits']['max'] : 0;
                             unset($value1['limits']);
                             $final_data['payment_setting_data'][$value1['gateway']] = $value1;
                         }
@@ -75,15 +75,6 @@ trait Payment_sdk
         }
     }
 
-    /**
-     * 平台调用
-     * @return mixed
-     */
-    public function get_payment_setting()
-    {
-        return $this->payment_data_json;
-    }
-
 
     /**
      * 提交订单生成订单数据
@@ -92,7 +83,7 @@ trait Payment_sdk
      */
     public function payment_forward($order_params)
     {
-        $payment_data_json = $this->payment_data_json;
+        $payment_data_json = $this->get_payment_setting();
         if (!empty($payment_data_json) && !isset($payment_data_json['error_msg'])) {
             $payment_data_arr = json_decode($payment_data_json, true);
             extract($payment_data_arr);
@@ -100,7 +91,7 @@ trait Payment_sdk
             $deposit_order['ip'] = $this->get_client_ip(); //获取用户IP地址
             //##################【 准备要提交到第三方平台 】#################################
             $forward_arr = [
-                'return_url' => $deposit_order['return_url'] . '/deposit/return',
+                'return_url' => $deposit_order['return_url'],
                 'order_no' => $deposit_order['order_no'],
                 'amount' => number_format($deposit_order['amount'], 2, '.', ''),
                 'gateway' => $deposit_order['gateway'],
