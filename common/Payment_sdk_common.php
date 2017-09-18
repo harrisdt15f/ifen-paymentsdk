@@ -8,7 +8,7 @@
  */
 class Payment_sdk_common
 {
-    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $lgvpay_withdraw_url, $lgvpay_deposit_order_url, $lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv,$payment_data_json;
+    protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $lgvpay_withdraw_url, $lgvpay_deposit_order_url, $lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv, $payment_data_json;
     private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension, $skd_pem, $skd_crt;
 
     /**
@@ -349,23 +349,31 @@ html;
         $marker = 0;
         $k = '';
         $log_name = '';
-//        $numArgs = func_num_args();
+        $numArgs = func_num_args();
         $args = func_get_args();
-        $flc_all = array_pop($args);
-        $flc_str = $flc_all['class'] . "*" . $flc_all['function'];
         foreach ($args as $index => $arg) {
             if (is_array($arg)) {
                 if (array_key_exists("log_name", $arg)) {
                     $log_name = $arg['log_name'];
                     unset($arg['log_name']);
+                    $flc_path = $this->sdk_logs_path . $log_name;
+                    $this->create_directory_path($flc_path);
                 } else {
-                    $log_name = $flc_all['function'];
+                    $flc_all = $numArgs > 1 ? array_pop($args) : $args;
+                    $flc_str = isset($flc_all['class']) ? $flc_all['class'] . "*" . $flc_all['function'] : 'default';
+                    $log_name = isset($flc_all['class']) ? $flc_all['function'] : 'default';
                 }
                 if (!empty($flc_str)) {
-                    $flc = explode('*', $flc_str);
-                    $mainfolder = $flc[0];
-                    $subfolder = $flc[1];
-                    $flc_path = $this->sdk_logs_path . $mainfolder . '/' . $subfolder;
+
+                    if(strpos($flc_str, '*') !== false) {
+                        $flc = explode('*', $flc_str);
+                        $mainfolder = $flc[0];
+                        $subfolder = $flc[1];
+                        $flc_path = $this->sdk_logs_path . $mainfolder . '/' . $subfolder;
+                    }
+                    else{
+                        $flc_path = $this->sdk_logs_path . $log_name;
+                    }
                     $this->create_directory_path($flc_path);
                 }
                 array_push($log, $arg);

@@ -29,6 +29,9 @@ trait Payment_sdk
         $result = $this->httpGet($url);
         if (!empty($result) && !isset($result['error_msg'])) {
             $payment_response = json_decode($result, true);
+            $method_log['payment_response']= json_en_uni($payment_response,true);
+            $method_log['log_name']= 'payment_setting';
+            $this->log_args_write($method_log);
             //#################################
             //获取到第三方 开启的 数据
             if (!is_null($payment_response) && isset($payment_response['data'])) {
