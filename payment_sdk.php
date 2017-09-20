@@ -15,26 +15,34 @@ require_once $sdk_path . '/common/Payment_sdk_common.php';
 
 trait Payment_sdk
 {
+
     /**
      * 获取目前开启的所有支付渠道 平台调用
-     * @return array|mixed|string
+     * @return string
+     * @throws Exception
      */
     public function get_payment_setting()
     {
         header("Content-Type:text/html;charset=utf-8");
         $url = $this->lgvpay_methods_url;
-        if (is_array($url = $this->validate_valid_url($url))) {
+        if (is_array($url = $this->validate_sdk_url($url))) {
             return $url;
         }
         $result = $this->httpGet($url);
         if (!empty($result) && !isset($result['error_msg'])) {
             $payment_response = json_decode($result, true);
-            $method_log['payment_response']= json_en_uni($payment_response,true);
-            $method_log['log_name']= 'payment_setting';
+            $method_log['payment_response'] = $this->json_en_uni($payment_response, true);
+            $method_log['log_name'] = 'payment_setting';
             $this->log_args_write($method_log);
+            //##############[ first check if it's with ok and data ]############
+            $rules = [
+                'ok' => 'required',
+                'data' => 'required',
+            ];
+            $payment_response = $this->easy_valid($payment_response, $rules);
             //#################################
             //获取到第三方 开启的 数据
-            if (!is_null($payment_response) && isset($payment_response['data'])) {
+            if (!is_null($payment_response)) {
                 $payment_response_data = $payment_response['data'];
                 $final_data['gate_ways'] = [];
                 $final_data['gate_ways_cnname'] = [];
@@ -72,6 +80,7 @@ trait Payment_sdk
                 $this->marker = __FUNCTION__;
                 return $this->error_return($this->errors_filer['third_party_data_error']);
             }
+            //##############################################
         } else {
             $this->marker = __FUNCTION__;
             return $this->error_return($this->errors_filer['third_party_data_empty']);
@@ -80,22 +89,46 @@ trait Payment_sdk
 
     /**
      * 提交订单生成订单数据
-     * @param $order_params
+     * @param array $order_params
      * @return mixed
+     * @throws Exception
      */
-    public function payment_forward($order_params)
+    public function payment_forward($order_params = [])
     {
+        //########################################
+        $rules = [
+            'return_url' => 'required|valid_url',
+            'order_no' => 'required|min_len,17|max_len,25',
+            'amount' => 'required|float',
+            'gateway' => 'required|alpha',
+            'ip' => 'required|valid_ip',
+        ];
+        $filters = [
+            'return_url' => 'trim|sanitize_string',
+            'order_no' => 'trim',
+            'amount' => 'trim',
+            'gateway' => 'trim',
+            'ip' => 'trim',
+        ];
+        $order_params = $this->filter($order_params, $filters);
+        $order_params = $this->easy_valid($order_params, $rules);
+        //#######################################
         $payment_data_json = $this->get_payment_setting();
         if (!empty($payment_data_json) && !isset($payment_data_json['error_msg'])) {
             $payment_data_arr = json_decode($payment_data_json, true);
             extract($payment_data_arr);
             $deposit_order = $order_params;
             $deposit_order['ip'] = $this->get_client_ip(); //获取用户IP地址
+            $amount = 0.0;
+            if (isset($deposit_order['amount'])) {
+                $amount = empty($deposit_order['amount']) ? $amount : number_format($deposit_order['amount'], 2, '.', '');
+            }
+
             //##################【 准备要提交到第三方平台 】#################################
             $forward_arr = [
                 'return_url' => $deposit_order['return_url'],
                 'order_no' => $deposit_order['order_no'],
-                'amount' => number_format($deposit_order['amount'], 2, '.', ''),
+                'amount' => $amount,
                 'gateway' => $deposit_order['gateway'],
                 'ip' => $deposit_order['ip'],
             ];
@@ -108,17 +141,38 @@ trait Payment_sdk
             $result = $this->httpPost($url, $forward_arr);
             if (!empty($result) && !isset($result['error_msg'])) {
                 $payment_response = json_decode($result, true);
-                if (isset($payment_response['data'])) {
-                    if (isset($payment_response['data']['form'])) {
-                        $this->buildForm($payment_response['data']);
-                    } else {
-                        if (isset($payment_response['data']['url'])) {
-                            return $payment_response['data']['url'];
-                        } else {
-                            return $this->error_return($this->errors_filer['third_party_no_qr_code']);
-                        }
-                    }
+                //######################
+                $rules = [
+                    'ok' => 'required',
+                    'data' => 'required',
+                ];
+                $payment_response = $this->easy_valid($payment_response, $rules);
+                //######################
+                if (isset($payment_response['data']['form'])) {
+                    //#########[校验]#############
+                    $payment_response = $payment_response['data'];
+                    $rules = [
+                        'method' => 'required|alpha|min_len,3|max_len,4',//GET,POST
+                        'url' => 'required|valid_url',
+                    ];
+                    $declare_chinese = [
+                        'url' => '支付跳转链接',
+                    ];
+                    $payment_response = $this->easy_valid($payment_response, $rules, $declare_chinese);
+                    //######################
+                    $this->buildForm($payment_response);
                 } else {
+                    //#########[校验]#############
+                    $payment_response = $payment_response['data'];
+                    $rules = [
+                        'url' => 'required|valid_url',
+                    ];
+                    $declare_chinese = [
+                        'url' => '扫码链接',
+                    ];
+                    $payment_response = $this->easy_valid($payment_response, $rules, $declare_chinese);
+                    //######################
+                    return $payment_response['url'];
                 }
             } else {
                 $this->marker = __FUNCTION__;
@@ -128,6 +182,7 @@ trait Payment_sdk
             $this->marker = __FUNCTION__;
             return isset($payment_data_json['error_msg']) ? $this->error_return($payment_data_json['error_msg']) : $this->error_return($this->errors_filer['third_party_data_error']);
         }
+        //#########################################
     }
 
     /**
@@ -137,7 +192,6 @@ trait Payment_sdk
      */
     public function getDepositOrderNum($gateway = '')
     {
-        // return $this->order_prefix . uniqid(mt_rand());
         switch ($gateway) {
             case 'banks':
                 $order_no = $this->order_prefix . 'BK' . $this->RandomString(3) . time();

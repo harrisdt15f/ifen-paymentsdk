@@ -15,9 +15,10 @@ require_once $sdk_path . '/payment_sdk.php';
 require_once $sdk_path . '/withdraw_sdk.php';
 require_once $sdk_path . '/status_controll.php';
 require_once $sdk_path . '/common/Payment_sdk_common.php';
+require_once $sdk_path . '/king_sanitize.php';
 class Thirdparty_payment extends Payment_sdk_common {
 	public function __construct() {
 		parent::__construct();
 	}
-	use Payment_sdk, Withdraw_sdk;
+	use Payment_sdk, Withdraw_sdk , King_sanitize;
 }

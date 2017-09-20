@@ -70,7 +70,7 @@
 		'base_url' => 'https://qupa.uas-gw.info/', //支付系统地址
 		'methods_url' => 'deposit/qupai/methods',//支付系统获取开关地址
 		'forward_url' => 'deposit/qupai/forward',//支付系统提交地址
-        'notify_url' => 'deposit/qupai/~channel~/notify',//支付系统通知地址 (~channel~) 为动态支付系统返回值
+        'notify_url' => 'deposit/notify/~tx_no~',//支付系统通知地址 (~tx_no~) 为动态支付系统返回的支付系统生成单号
         'withdraw_url' => 'withdrawal/qupai/forward',//支付系统提款地址
         'deposit_order_search_url'=> 'deposit/qupai/order/~tx_no~',//支付系统充值对账查询地址 (~txt_no~) 为动态支付系统返回值
         'withdraw_order_search_url'=> 'withdrawal/qupai/order/~tx_no~',//支付系统提现对账查询地址 (~txt_no~) 为动态支付系统返回值
@@ -101,7 +101,7 @@
 
 
 
-##### 获取第三方支付信息
+##### 1. 获取第三方支付信息
 
 函数
 
@@ -144,7 +144,7 @@ $payment_setting_data
 
 -------
 
-##### 提交充值
+##### 2. 提交充值
 
 函数
 
@@ -159,20 +159,26 @@ $payment_instance = new Thirdparty_payment();
 $payment_data = $payment_instance->payment_forward();
 ```
 
-获得变量名以下
+提交参数
 
-|    参数名     | 详解                                       | 值                                        |
-| :--------: | ---------------------------------------- | ---------------------------------------- |
-|  order_no  | sdk 里面有带函数 直接调用即可 列如。 getDepositOrderNum（'banks'） | qpBK88a1504502831                        |
-|   amount   | 充值金额                                     | 10.00                                    |
-|  gateway   | 渠道名称                                     | banks                                    |
-| return_url | 通知同步回调地址 就是平台域名                          | http://平台域名/同步回调地址<br> 列如：http://www.qupai.com/deposit/return |
+| 参数名         | 详解                      | 值             |
+| ----------- | ----------------------- | ------------- |
+| forward_arr | 数组传入payment_forward()的值 | forward_arr[] |
+
+forward_arr[]参数
+
+|    参数名     | 详解                                       | 值                                        | 必填项  | 类型     |
+| :--------: | ---------------------------------------- | ---------------------------------------- | ---- | ------ |
+|  order_no  | sdk 里面有带函数 直接调用即可 列如。 getDepositOrderNum（'banks'） | qpBK88a1504502831                        | 是    | string |
+|   amount   | 充值金额                                     | 10.00                                    | 是    | float  |
+|  gateway   | 渠道名称                                     | banks                                    | 是    | string |
+| return_url | 通知同步回调地址 就是平台域名                          | http://平台域名/同步回调地址<br> 列如：http://www.qupai.com/deposit/return | 是    | string |
 
 -------
 
 
 
-##### 生成订单
+##### 2.1 生成订单
 
 函数
 
@@ -189,9 +195,9 @@ $CompanyOrderNum = $payment_instance->getDepositOrderNum($payment_gateway);
 
 参数
 
-| 参数              | 详解          | 值                               |
-| --------------- | ----------- | ------------------------------- |
-| payment_gateway | 用渠道名生成响应的订单 | banks/weixin/unionpay/qq/alipay |
+| 参数              | 详解          | 值                               | 必填项  | 类型     |
+| --------------- | ----------- | ------------------------------- | ---- | ------ |
+| payment_gateway | 用渠道名生成响应的订单 | banks/weixin/unionpay/qq/alipay | 是    | string |
 
 返回值
 
@@ -201,29 +207,29 @@ $CompanyOrderNum = $payment_instance->getDepositOrderNum($payment_gateway);
 
 
 
-##### 支付系统通知同步回调
+##### 3. 支付系统通知同步回调
 
 函数
 
 ```
-payment_callback($channel, $all_inputs)
+payment_callback($tx_no, $all_inputs)
 ```
 
 用法
 
 ```
 $payment_instance = new Thirdparty_payment();
-$result = $payment_instance->payment_callback($channel, $all_inputs);
+$result = $payment_instance->payment_callback($tx_no, $all_inputs);
 ```
 
 接收与传送值
 
 把接收到的 以下参数都传给 支付系统。
 
-| 参数          | 详解                         |
-| ----------- | -------------------------- |
-| $channel    | 支付系统 传过来的 值                |
-| $all_inputs | 支付系统 传过来的所有http请求参数 排除 url |
+| 参数          | 详解                                  | 必填项  | 类型     |
+| ----------- | ----------------------------------- | ---- | ------ |
+| $tx_no      | 支付系统 传过来的 单号                        | 是    | string |
+| $all_inputs | 支付系统 传过来的 【 所有http请求参数 】【排除 url 参数】 | 是    | array  |
 
 返回值
 
@@ -233,7 +239,7 @@ $result = $payment_instance->payment_callback($channel, $all_inputs);
 
 ##### 
 
-##### 异步回调时解密数据
+##### 4. 异步回调时解密数据
 
 ```
 decrypt_content($content)
@@ -282,9 +288,9 @@ $deposit_search_result = $payment_instance->deposit_order_search($order_no);
 
 参数
 
-| 参数        | 详解                             | 值                        |
-| --------- | ------------------------------ | ------------------------ |
-| $order_no | 此订单为支付系统异步回调时返回来的 txt_no，非平台生成 | 201709061040367044150829 |
+| 参数        | 详解                             | 值                        | 必填项  | 类型     |
+| --------- | ------------------------------ | ------------------------ | ---- | ------ |
+| $order_no | 此订单为支付系统异步回调时返回来的 txt_no，非平台生成 | 201709061040367044150829 | 是    | string |
 
 
 

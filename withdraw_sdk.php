@@ -54,7 +54,8 @@ trait Withdraw_sdk
      * 提款单
      * @return string
      */
-    public function withdrawl_serial() {
+    public function withdrawl_serial()
+    {
         $fix_year = 2010;
         $year_code = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         //############################
@@ -81,7 +82,7 @@ trait Withdraw_sdk
         $ran_0_99 = rand(0, 99);
         $ran_2d = sprintf('%02d', $ran_0_99);
         //############################
-        $order_sn = $Y . $m_up . $d . $t5 . $m_time_2_5 . $ran_2d.'_'.$this->order_prefix;
+        $order_sn = $Y . $m_up . $d . $t5 . $m_time_2_5 . $ran_2d . '_' . $this->order_prefix;
         return $order_sn;
     }
 
