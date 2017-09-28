@@ -12,8 +12,10 @@ foreach ($var_explode as $number) {
     $sdk_path .= $number . '/';
 }
 
-require_once $sdk_path . '/common/Payment_sdk_common.php';
-trait Status_controll {
+require_once $sdk_path . '../common/Payment_sdk_common.php';
+
+trait Status_controll
+{
 
 
 }

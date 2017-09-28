@@ -12,41 +12,76 @@ foreach ($var_explode as $number) {
     $sdk_path .= $number . '/';
 }
 
-require_once $sdk_path . '/common/Payment_sdk_common.php';
+require_once $sdk_path . '../common/Payment_sdk_common.php';
 
 trait Withdraw_sdk
 {
     /**
+     * 提现请求
      * @param $data
      * @return mixed
+     * @throws Exception
      */
     public function widthdraw_forward($data)
     {
+        //##############################################
+        $rules = [
+            'order_no' => 'required|min_len,19|max_len,25',// 平台提现订单号
+            'amount' => 'required|float',// 提现金额
+            'bank' => 'required|alpha|min_len,4|max_len,6', // 用户开户行
+            'bank_province' => 'required', // 开户行所在省份
+            'bank_city' => 'required', // 开户行所在城市
+            'bank_branch' => 'required', // 开户支行名称
+            'card_no' => 'required|numeric', // 银行借记卡卡号
+            'card_holder' => 'required', // 开户人名字
+            'holder_phone' => 'required|numeric', // 开户人在银行登记的手机号码
+            'holder_id' => 'numeric', // 开户人的身份证号码
+        ];
+        $filters = [
+            'order_no' => 'trim',// 平台提现订单号
+            'amount' => 'trim',// 提现金额
+            'bank' => 'trim', // 用户开户行
+            'bank_province' => 'trim', // 开户行所在省份
+            'bank_city' => 'trim', // 开户行所在城市
+            'bank_branch' => 'trim', // 开户支行名称
+            'card_no' => 'trim', // 银行借记卡卡号
+            'card_holder' => 'trim', // 开户人名字
+            'holder_phone' => 'trim', // 开户人在银行登记的手机号码
+            //'holder_id' => 'trim', // 开户人的身份证号码
+        ];
+        $data = $this->filter($data, $filters);
+        $data = $this->easy_valid($data, $rules, $error_status);
+        if ($error_status === true) {
+            return $data;
+        }
+        //##############################################
         $forward_arr = [
-            'order_no' => $data['order_no'],// 平台提现订单号
-            'amount' => $data['amount'],// 提现金额
-            'bank' => $data['bank'],// 用户开户行
-            'bank_province' => $data['bank_province'],// 开户行所在省份
+            'order_no' => $data['order_no'], // 平台提现订单号
+            'amount' => $data['amount'], // 提现金额
+            'bank' => $data['bank'], // 用户开户行
+            'bank_province' => $data['bank_province'], // 开户行所在省份
             'bank_city' => $data['bank_city'], // 开户行所在城市
-            'bank_branch' => $data['bank_branch'],// 开户支行名称
-            'card_no' => $data['card_no'],// 银行借记卡卡号
-            'card_holder' => $data['card_holder'],// 开户人名字
-            'holder_phone' => $data['holder_phone'],// 开户人在银行登记的手机号码
-            'holder_id' => $data['holder_id'],// 开户人的身份证号码
+            'bank_branch' => $data['bank_branch'], // 开户支行名称
+            'card_no' => $data['card_no'], // 银行借记卡卡号
+            'card_holder' => $data['card_holder'], // 开户人名字
+            'holder_phone' => $data['holder_phone'], // 开户人在银行登记的手机号码
+            'holder_id' => $data['holder_id'], // 开户人的身份证号码
             /*'ip' => $this->get_client_ip(), // 发起提现请求的服务器 IP 地址, ipv4 */
         ];
         $url = $this->lgvpay_withdraw_url;
         $result = $this->httpPost($url, $forward_arr);
+        $result = json_decode($result, true);
         if (!empty($result) && !isset($result['error_msg'])) {
-            $payment_response = json_decode($result, true);
+            $payment_response = $result;
             if (isset($payment_response['ok'])) {
-                return $payment_response['ok'];
+                return json_encode($payment_response);
             } else {
                 return $this->error_return($this->errors_filer['third_party_data_error']);
             }
         } else {
             $this->marker = __FUNCTION__;
-            return isset($result['error_msg']) ? $this->error_return($result['error_msg']) : $this->error_return($this->errors_filer['third_party_payment_confirm_error']);
+            $error_msg = $this->sdk_throw_error($result, true, 'third_party_payment_confirm_error');
+            return $error_msg;
         }
     }
 
@@ -113,5 +148,4 @@ trait Withdraw_sdk
         $decrypt = json_decode(openssl_decrypt($ctx, $this->decrypt_method, $this->decrypt_password, $this->decrypt_options, $this->decrypt_iv), true);
         return $decrypt;
     }
-
 }

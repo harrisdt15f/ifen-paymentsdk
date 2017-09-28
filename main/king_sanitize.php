@@ -11,7 +11,7 @@ $sdk_path = '';
 foreach ($var_explode as $number) {
     $sdk_path .= $number . '/';
 }
-require_once $sdk_path . '/common/Payment_sdk_common.php';
+require_once $sdk_path . '../common/Payment_sdk_common.php';
 
 trait King_sanitize
 {
@@ -2041,18 +2041,22 @@ trait King_sanitize
      * easy_valid
      * @param $data
      * @param $rules
+     * @param $error_status
      * @param array $declare_chinese
      * @return mixed
      * @throws Exception
      */
-    public function easy_valid($data, $rules, $declare_chinese = [])
+    public function easy_valid($data, $rules, &$error_status = false, $declare_chinese = [])
     {
         $validated = $this->validate($data, $rules);
         if ($validated !== true) {
             $v_error = $this->get_readable_errors();
             $v_error = $this->h_ack_message($v_error);
             $v_error = $this->h_ack_translate($declare_chinese, $v_error);
-            $this->sdk_throw_error($v_error);
+            $result['error_msg'] = $v_error;
+            $error = json_encode($result);
+            $error_status = true;
+            return $error;
         } else {
             return $data;
         }

@@ -9,7 +9,7 @@
 class Payment_sdk_common
 {
     protected $path, $lgvpay_baseurl, $lgvpay_methods_url, $lgvpay_forward_url, $lgvpay_notify_url, $lgvpay_withdraw_url, $lgvpay_deposit_order_url, $lgvpay_withdraw_order_url, $banks_sync, $net_banks_sync, $platform_name, $order_prefix, $errors_filer, $order_path, $marker, $decrypt_method, $decrypt_password, $decrypt_options, $decrypt_iv, $payment_data_json;
-    private $city, $timezone, $millisecond, $sdk_logs_path, $pay_need_extension, $skd_pem, $skd_crt;
+    private $city, $timezone, $millisecond, $sdk_logs_path, $sdk_logs_groups, $pay_need_extension, $skd_pem, $skd_crt;
 
     /**
      * Payment_sdk_common constructor.
@@ -37,16 +37,18 @@ class Payment_sdk_common
         $this->path = $sdk_path . "config/"; //配置文件所在目录
         $config = $this->path . 'payment_sdk_config.php'; //配置文件名
         $error_file = $this->path . 'error_info.php'; //错误配置
-        $this->sdk_logs_path = $sdk_path . "logs/";//存日志路径
         $this->order_path = $sdk_path . "deposit_order/";
-        $config = require_once $config;//获取配置文件
+        $config = require_once $config; //获取配置文件
+        $main_log_dir = key($config['log']);
+        $this->sdk_logs_path = $sdk_path . $main_log_dir . '/'; //存日志路径
+        $this->sdk_logs_groups = $config['log'][$main_log_dir];
         $this->skd_pem = $this->path . $config['pem_cert']; //pem 证书 需放入sdk config 目录下
-        $this->skd_crt = $this->path . $config['ca_cert'];//ca 证书 需放入sdk config 目录下
-        $this->order_prefix = $config['order_prefix'];//订单前缀
-        $this->platform_name = $config['platform'];//订单前缀
+        $this->skd_crt = $this->path . $config['ca_cert']; //ca 证书 需放入sdk config 目录下
+        $this->order_prefix = $config['order_prefix']; //订单前缀
+        $this->platform_name = $config['platform']; //订单前缀
         //########## 【 url 】##############
-        $this->lgvpay_baseurl = $config['lgv_pay_url']['base_url'];//第三方支付平台地址
-        $this->lgvpay_methods_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['methods_url'];//第三方支付开启信息获取链接
+        $this->lgvpay_baseurl = $config['lgv_pay_url']['base_url']; //第三方支付平台地址
+        $this->lgvpay_methods_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['methods_url']; //第三方支付开启信息获取链接
         $this->lgvpay_forward_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['forward_url'];
         $this->lgvpay_notify_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['notify_url'];
         //第三方支付提款链接
@@ -55,13 +57,13 @@ class Payment_sdk_common
         $this->lgvpay_withdraw_order_url = $this->lgvpay_baseurl . $config['lgv_pay_url']['withdraw_order_search_url'];
         //######################################
         //第三方支付平台提交订单地址
-        $this->banks_sync = $config['banks'];//第三方平台支付与产品平台银行同步
-        $this->net_banks_sync = $config['net_banks'];//第三方平台支付与产品平台数据库中的配置同步
+        $this->banks_sync = $config['banks']; //第三方平台支付与产品平台银行同步
+        $this->net_banks_sync = $config['net_banks']; //第三方平台支付与产品平台数据库中的配置同步
         $this->millisecond = $config['connection_time']['millisecond']; //获取链接毫秒
-        $this->city = $config['logging_timezone']['city'];//地区配置
-        $this->timezone = $config['logging_timezone']['timezone'];//时间戳配置
-        $this->errors_filer = require_once $error_file;//错误信息代替显示配置
-        $this->pay_need_extension = $config['pay_need_extensions'];//PHP需要扩展配置
+        $this->city = $config['logging_timezone']['city']; //地区配置
+        $this->timezone = $config['logging_timezone']['timezone']; //时间戳配置
+        $this->errors_filer = require_once $error_file; //错误信息代替显示配置
+        $this->pay_need_extension = $config['pay_need_extensions']; //PHP需要扩展配置
         $this->decrypt_method = $config['decrypt']['method'];
         $this->decrypt_password = $config['decrypt']['password'];
         $this->decrypt_options = $config['decrypt']['options'];
@@ -107,11 +109,10 @@ class Payment_sdk_common
     private function get_perm()
     {
         $pemFile = tmpfile();
-        fwrite($pemFile, $this->skd_pem);//the path for the pem file
+        fwrite($pemFile, $this->skd_pem); //the path for the pem file
         $tempPemPath = stream_get_meta_data($pemFile);
         $tempPemPath = $tempPemPath['uri'];
         return $tempPemPath;
-
     }
 
     /**
@@ -176,9 +177,9 @@ class Payment_sdk_common
         curl_setopt($ch, CURLOPT_CAINFO, $this->skd_crt);
         //###########
         $output = curl_exec($ch);
-
         if (!$output) {
-            $this->error_return(curl_error($ch));
+            $curl_error = curl_error($ch);
+            $this->error_return($curl_error);
             $this->error_return($postData);
             $this->marker = __FUNCTION__;
             $this->curl_header_check($ch, $code);
@@ -189,7 +190,7 @@ class Payment_sdk_common
         $info = $this->curl_header_check($ch, $code);
         curl_close($ch);
         //##
-        return $info === true ? $output : $this->error_return($error = isset($this->errors_filer[$return_error['error']]) ? $this->errors_filer[$return_error['error']] : $this->errors_filer['third_party_url_error']);
+        return $info === true ? $output : (isset($this->errors_filer[$return_error['error']]) ? $this->error_return($this->errors_filer[$return_error['error']]) : $this->error_return($this->errors_filer['third_party_url_error']));
     }
 
     /**
@@ -253,22 +254,49 @@ class Payment_sdk_common
                 }
             }
         }
+
         //########################写日志###########################
-        $this->log_args_write($error_reflect, $flc_all);
+        $log = array_merge($error_reflect,$flc_all);
+        $this->log_args_write($log);
         //#########################################################
+        $error_reflect = json_encode($error_reflect);
         return $error_reflect;
     }
 
     /**
      * @param $error_data
+     * @param bool $json
+     * @param string $replace_str
+     * @return array|string
      */
-    public function sdk_throw_error($error_data)
+    public function sdk_throw_error($error_data, $json = false, $replace_str = '')
     {
-        if (is_array($error_data)) {
-            $error_data = str_replace('\"', '', $error_data['error_msg']);
-            $error_data = str_replace('"', '', $error_data);
+        if ($json === false) {
+            if (is_array($error_data)) {
+                $error_data = str_replace('\"', '', $error_data['error_msg']);
+                $error_data = str_replace('"', '', $error_data);
+            }
+            $error_data = $this->html_error_page($error_data);
+            echo $error_data;
+            die();
+        } else {
+            if (isset($error_data['error_msg'])) {
+                return json_encode($error_data);
+            } else {
+                return $this->error_return($this->errors_filer[$replace_str]);
+            }
+
         }
 
+    }
+
+    /**
+     * 生成HTML错误信息页面
+     * @param string $error_data
+     * @return mixed|string
+     */
+    private function html_error_page($error_data = '')
+    {
         $html = <<<html
         <!DOCTYPE html>
         <html>
@@ -328,13 +356,11 @@ class Payment_sdk_common
             window.close();
         }
         </script>
-        
         </body>
         </html>
 html;
         $error_data = str_replace('~error~', $error_data, $html);
-        echo $error_data;
-        die();
+        return $error_data;
     }
     //###############################[Loggin]#########################################
 
@@ -349,33 +375,35 @@ html;
     protected function log_args_write()
     {
         $log = [];
+        $log_gruop_names = $this->sdk_logs_groups;
         $marker = 0;
         $k = '';
         $log_name = '';
-        $numArgs = func_num_args();
+        $dir_l = DIRECTORY_SEPARATOR;
+        /*$numArgs = func_num_args();*/
         $args = func_get_args();
+        $derive_dir = '~debugs~' . $dir_l;
         foreach ($args as $index => $arg) {
             if (is_array($arg)) {
+                $log_gruop_name = key(array_intersect_key($log_gruop_names, $arg));
+                $derive_dir = $log_gruop_name != null ? str_replace('~debugs~', $log_gruop_names[$log_gruop_name], $derive_dir) : str_replace('~debugs~', $log_gruop_names['default'], $derive_dir);
                 if (array_key_exists("log_name", $arg)) {
                     $log_name = $arg['log_name'];
                     unset($arg['log_name']);
-                    $flc_path = $this->sdk_logs_path . $log_name;
+                    $flc_path = $this->sdk_logs_path . $derive_dir;
                     $this->create_directory_path($flc_path);
                 } else {
-                    $flc_all = $numArgs > 1 ? array_pop($args) : $args;
-                    $flc_str = isset($flc_all['class']) ? $flc_all['class'] . "*" . $flc_all['function'] : 'default';
-                    $log_name = isset($flc_all['class']) ? $flc_all['function'] : 'default';
+                    $flc_str = isset($arg['class']) ? $arg['class'] . "*" . $arg['function'] : 'default';
+                    $log_name = isset($arg['class']) ? $arg['function'] : 'default';
                 }
                 if (!empty($flc_str)) {
-
-                    if(strpos($flc_str, '*') !== false) {
+                    if (strpos($flc_str, '*') !== false) {
                         $flc = explode('*', $flc_str);
-                        $mainfolder = $flc[0];
-                        $subfolder = $flc[1];
-                        $flc_path = $this->sdk_logs_path . $mainfolder . '/' . $subfolder;
-                    }
-                    else{
-                        $flc_path = $this->sdk_logs_path . $log_name;
+                        $class_name_dir = $flc[0];
+                        /*$subfolder = $flc[1];*/
+                        $flc_path = $this->sdk_logs_path . $derive_dir . $class_name_dir;
+                    } else {
+                        $flc_path = $this->sdk_logs_path . $derive_dir . $log_name;
                     }
                     $this->create_directory_path($flc_path);
                 }
@@ -566,19 +594,20 @@ html;
      */
     public function get_client_ip()
     {
-        if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return $_SERVER['HTTP_CLIENT_IP'];
-        }
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return strtok($_SERVER['HTTP_X_FORWARDED_FOR'], ',');
-        }
-        if (isset($_SERVER['HTTP_PROXY_USER']) && !empty($_SERVER['HTTP_PROXY_USER'])) {
-            return $_SERVER['HTTP_PROXY_USER'];
-        }
-        if (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])) {
-            return $_SERVER['REMOTE_ADDR'];
-        } else {
-            return "0.0.0.0";
-        }
+        if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP']))
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        else if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        else if (isset($_SERVER['HTTP_X_FORWARDED']) && !empty($_SERVER['HTTP_X_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        else if (isset($_SERVER['HTTP_FORWARDED_FOR']) && !empty($_SERVER['HTTP_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        else if (isset($_SERVER['HTTP_FORWARDED']) && !empty($_SERVER['HTTP_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        else if (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR']))
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        else
+            $ipaddress = '0.0.0.0';
+        return $ipaddress;
     }
 }

@@ -5,20 +5,26 @@
  * Date: 17-8-15
  * Time: 下午3:02
  */
-$var_explode = explode('/', __FILE__);
-array_pop($var_explode);
-$sdk_path = '';
-foreach ($var_explode as $number) {
-	$sdk_path .= $number . '/';
+require_once 'loader.php';
+$class_to_load = ['payment_sdk', 'withdraw_sdk', 'status_controll', 'king_sanitize', 'Payment_sdk_common'];
+$folder_nav = [
+    'main' => ['payment_sdk', 'withdraw_sdk', 'status_controll', 'king_sanitize'],
+    'common' => ['Payment_sdk_common'],
+];
+foreach ($class_to_load as $class) {
+    $subdir = search_load_class($class, $folder_nav);
+    if (!empty($subdir)) {
+        $path = get_current_path();
+        load_class($class, $path, $subdir);
+    }
 }
-require_once $sdk_path . '/payment_sdk.php';
-require_once $sdk_path . '/withdraw_sdk.php';
-require_once $sdk_path . '/status_controll.php';
-require_once $sdk_path . '/common/Payment_sdk_common.php';
-require_once $sdk_path . '/king_sanitize.php';
-class Thirdparty_payment extends Payment_sdk_common {
-	public function __construct() {
-		parent::__construct();
-	}
-	use Payment_sdk, Withdraw_sdk , King_sanitize;
+
+class Thirdparty_payment extends Payment_sdk_common
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    use Payment_sdk, Withdraw_sdk, King_sanitize;
 }

@@ -11,11 +11,10 @@ $sdk_path = '';
 foreach ($var_explode as $number) {
     $sdk_path .= $number . '/';
 }
-require_once $sdk_path . '/common/Payment_sdk_common.php';
+require_once $sdk_path . '../common/Payment_sdk_common.php';
 
 trait Payment_sdk
 {
-
     /**
      * 获取目前开启的所有支付渠道 平台调用
      * @return string
@@ -29,8 +28,9 @@ trait Payment_sdk
             return $url;
         }
         $result = $this->httpGet($url);
+        $result = json_decode($result, true);
         if (!empty($result) && !isset($result['error_msg'])) {
-            $payment_response = json_decode($result, true);
+            $payment_response = $result;
             $method_log['payment_response'] = $this->json_en_uni($payment_response, true);
             $method_log['log_name'] = 'payment_setting';
             $this->log_args_write($method_log);
@@ -39,7 +39,12 @@ trait Payment_sdk
                 'ok' => 'required',
                 'data' => 'required',
             ];
-            $payment_response = $this->easy_valid($payment_response, $rules);
+            $result_valid = $this->easy_valid($payment_response, $rules, $error_status);
+            if ($error_status === true) {
+                return $result_valid;
+            } else {
+                $payment_response = $result_valid;
+            }
             //#################################
             //获取到第三方 开启的 数据
             if (!is_null($payment_response)) {
@@ -47,12 +52,14 @@ trait Payment_sdk
                 $final_data['gate_ways'] = [];
                 $final_data['gate_ways_cnname'] = [];
                 $final_data['gate_ways_image'] = [];
-                foreach ($payment_response_data as $key1 => $value1) {//value2 is key inside of data
+                foreach ($payment_response_data as $key1 => $value1) {
+//value2 is key inside of data
                     if (isset($value1['gateway'])) {
                         array_push($final_data['gate_ways'], $value1['gateway']);
                         if ($value1['gateway'] == 'banks') {
                             //loop banks array
-                            foreach ($value1['banks'] as $key2 => $value2) {//value2 is key inside of banks
+                            foreach ($value1['banks'] as $key2 => $value2) {
+//value2 is key inside of banks
                                 $value2['currency_min'] = isset($value1['limits']['min']) ? $value1['limits']['min'] : 0;
                                 $value2['currency_max'] = isset($value1['limits']['max']) ? $value1['limits']['max'] : 0;
                                 $value2['tips'] = $value1['tips'];
@@ -78,12 +85,14 @@ trait Payment_sdk
                 return json_encode($final_data);
             } else {
                 $this->marker = __FUNCTION__;
-                return $this->error_return($this->errors_filer['third_party_data_error']);
+                $error_msg = $this->sdk_throw_error($payment_response, true, 'third_party_data_error');
+                return $error_msg;
             }
             //##############################################
         } else {
             $this->marker = __FUNCTION__;
-            return $this->error_return($this->errors_filer['third_party_data_empty']);
+            $error_msg = $this->sdk_throw_error($result, true, 'third_party_data_empty');
+            return $error_msg;
         }
     }
 
@@ -101,64 +110,71 @@ trait Payment_sdk
             'order_no' => 'required|min_len,17|max_len,25',
             'amount' => 'required|float',
             'gateway' => 'required|alpha',
-            'ip' => 'required|valid_ip',
         ];
         $filters = [
             'return_url' => 'trim|sanitize_string',
             'order_no' => 'trim',
             'amount' => 'trim',
             'gateway' => 'trim',
-            'ip' => 'trim',
         ];
+        if (isset($order_params['gateway']) && $order_params['gateway']=='banks')
+        {
+            $rules['bank']='required|alpha|min_len,4|max_len,6';
+            $filters['bank']= 'trim';
+        }
         $order_params = $this->filter($order_params, $filters);
-        $order_params = $this->easy_valid($order_params, $rules);
+        $order_params = $this->easy_valid($order_params, $rules, $error_status);
+        if ($error_status === true) {
+            return $order_params;
+        }
         //#######################################
-        $payment_data_json = $this->get_payment_setting();
-        if (!empty($payment_data_json) && !isset($payment_data_json['error_msg'])) {
-            $payment_data_arr = json_decode($payment_data_json, true);
-            extract($payment_data_arr);
-            $deposit_order = $order_params;
-            $deposit_order['ip'] = $this->get_client_ip(); //获取用户IP地址
+        $order_params['ip'] = $this->get_client_ip(); //获取用户IP地址
             $amount = 0.0;
-            if (isset($deposit_order['amount'])) {
-                $amount = empty($deposit_order['amount']) ? $amount : number_format($deposit_order['amount'], 2, '.', '');
+            if (isset($order_params['amount'])) {
+                $amount = empty($order_params['amount']) ? $amount : number_format($order_params['amount'], 2, '.', '');
             }
-
-            //##################【 准备要提交到第三方平台 】#################################
+        //##################【 准备要提交到第三方平台 】#################################
             $forward_arr = [
-                'return_url' => $deposit_order['return_url'],
-                'order_no' => $deposit_order['order_no'],
+                'return_url' => $order_params['return_url'],
+                'order_no' => $order_params['order_no'],
                 'amount' => $amount,
-                'gateway' => $deposit_order['gateway'],
-                'ip' => $deposit_order['ip'],
+                'gateway' => $order_params['gateway'],
+                'ip' => $order_params['ip'],
             ];
             if (isset($order_params['bank'])) //如果是 网银快捷就加银行编码
             {
-                $forward_arr['bank'] = $deposit_order['bank'];
+                $forward_arr['bank'] = $order_params['bank'];
             }
             header("Content-Type:text/html;charset=utf-8");
             $url = $this->lgvpay_forward_url;
             $result = $this->httpPost($url, $forward_arr);
+            $result = json_decode($result, true);
             if (!empty($result) && !isset($result['error_msg'])) {
-                $payment_response = json_decode($result, true);
+                $payment_response = $result;
                 //######################
                 $rules = [
                     'ok' => 'required',
                     'data' => 'required',
                 ];
-                $payment_response = $this->easy_valid($payment_response, $rules);
+                $payment_response = $this->easy_valid($payment_response, $rules, $error_status);
+                if ($error_status === true) {
+                    return $payment_response;
+                }
                 //######################
                 if (isset($payment_response['data']['form'])) {
                     //#########[校验]#############
                     $payment_response = $payment_response['data'];
                     $rules = [
-                        'method' => 'required|alpha|min_len,3|max_len,4',//GET,POST
+                        'method' => 'required|alpha|min_len,3|max_len,4', //GET,POST
                         'url' => 'required|valid_url',
                     ];
                     $declare_chinese = [
                         'url' => '支付跳转链接',
                     ];
-                    $payment_response = $this->easy_valid($payment_response, $rules, $declare_chinese);
+                    $payment_response = $this->easy_valid($payment_response, $rules, $error_status, $declare_chinese);
+                    if ($error_status === true) {
+                        return $payment_response;
+                    }
                     //######################
                     $this->buildForm($payment_response);
                 } else {
@@ -170,18 +186,18 @@ trait Payment_sdk
                     $declare_chinese = [
                         'url' => '扫码链接',
                     ];
-                    $payment_response = $this->easy_valid($payment_response, $rules, $declare_chinese);
+                    $payment_response = $this->easy_valid($payment_response, $rules, $error_status, $declare_chinese);
+                    if ($error_status === true) {
+                        return $payment_response;
+                    }
                     //######################
-                    return $payment_response['url'];
+                    return json_encode($payment_response); //$payment_response['url']
                 }
             } else {
                 $this->marker = __FUNCTION__;
-                return isset($result['error_msg']) ? $this->error_return($result['error_msg']) : $this->error_return($this->errors_filer['third_party_payment_confirm_error']);
+                $error_msg = $this->sdk_throw_error($result, true, 'third_party_payment_confirm_error');
+                return $error_msg;
             }
-        } else {
-            $this->marker = __FUNCTION__;
-            return isset($payment_data_json['error_msg']) ? $this->error_return($payment_data_json['error_msg']) : $this->error_return($this->errors_filer['third_party_data_error']);
-        }
         //#########################################
     }
 
@@ -256,11 +272,12 @@ trait Payment_sdk
      */
     public function payment_callback($tx_no, $all_inputs)
     {
+        $log_to_write['input']= $this->json_en_uni($all_inputs,true);
+        log_args_write($log_to_write);
         $url = str_replace('~tx_no~', $tx_no, $this->lgvpay_notify_url);
         $result = $this->httpPost($url, $all_inputs);
         return $result;
     }
-
 
     /**
      * 查询充值订单号与充值平台
