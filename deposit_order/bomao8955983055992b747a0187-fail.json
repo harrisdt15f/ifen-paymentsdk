@@ -1,9 +1,0 @@
-{
-    "bank": "BOC",
-    "user_id": "123456",
-    "deposit_mode": 2,
-    "amount": 5,
-    "gateway": "banks",
-    "order_no": "bomao8955983055992b747a0187",
-    "ip": "127.0.0.1"
-}

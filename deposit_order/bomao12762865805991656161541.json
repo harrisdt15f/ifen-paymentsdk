@@ -1,9 +1,0 @@
-{
-    "bank": "ICBC",
-    "user_id": "123456",
-    "deposit_mode": 2,
-    "amount": 5,
-    "gateway": "banks",
-    "order_no": "bomao12762865805991656161541",
-    "ip": "127.0.0.1"
-}
