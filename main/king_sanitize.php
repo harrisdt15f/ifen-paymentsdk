@@ -2021,7 +2021,7 @@ trait King_sanitize
         }
         $str = "";
         foreach ($arr as $key => $value) {
-            $str = $str . $value . "\n";
+            $str = $str . $value . "<br>";//"\n"
         }
         return $str;
     }

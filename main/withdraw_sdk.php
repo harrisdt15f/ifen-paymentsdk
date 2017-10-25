@@ -24,17 +24,18 @@ trait Withdraw_sdk
      */
     public function widthdraw_forward($data)
     {
+        $cn_char = '/^[a-zA-z\x{4e00}-\x{9fa5}]+$/u';
         //##############################################
         $rules = [
-            'order_no' => 'required|min_len,19|max_len,25',// 平台提现订单号
-            'amount' => 'required|float',// 提现金额
+            'order_no' => 'required|min_len,19|max_len,25',// 平台提现订单号 //~^[0-9]+[\.1-9]{1,1}[1-9]+$~
+            'amount' => 'required|float|regex,~^[0-9]+(\.[0-9]+)?$~',// 提现金额  ~^[0-9]+(\.[0-9]+)?$~
             'bank' => 'required|alpha|min_len,4|max_len,6', // 用户开户行
-            'bank_province' => 'required', // 开户行所在省份
-            'bank_city' => 'required', // 开户行所在城市
-            'bank_branch' => 'required', // 开户支行名称
+            'bank_province' => 'required|regex,' . $cn_char, // 开户行所在省份
+            'bank_city' => 'required|regex,' . $cn_char, // 开户行所在城市
+            'bank_branch' => 'required|regex,' . $cn_char, // 开户支行名称
             'card_no' => 'required|numeric', // 银行借记卡卡号
-            'card_holder' => 'required', // 开户人名字
-            'holder_phone' => 'required|numeric', // 开户人在银行登记的手机号码
+            'card_holder' => 'required|regex,' . $cn_char . '|min_len,2|max_len,13', // 开户人名字
+            'holder_phone' => 'required|phone_number', // 开户人在银行登记的手机号码
             'holder_id' => 'numeric', // 开户人的身份证号码
         ];
         $filters = [
@@ -49,8 +50,19 @@ trait Withdraw_sdk
             'holder_phone' => 'trim', // 开户人在银行登记的手机号码
             //'holder_id' => 'trim', // 开户人的身份证号码
         ];
+        $declare_chinese = [
+            'Order No' => '平台提现订单号',
+            'Amount' => '提现金额',
+            'Bank' => '用户开户行',
+            'Bank Province' => '开户行所在省份',
+            'Bank City' => '开户行所在城市',
+            'Bank Branch' => '开户支行名称',
+            'Card No' => '银行借记卡卡号',
+            'Card Holder' => '开户人名字',
+            'Holder Phone' => '开户人在银行登记的手机号码',
+        ];
         $data = $this->filter($data, $filters);
-        $data = $this->easy_valid($data, $rules, $error_status);
+        $data = $this->easy_valid($data, $rules, $error_status, $declare_chinese);
         if ($error_status === true) {
             return $data;
         }

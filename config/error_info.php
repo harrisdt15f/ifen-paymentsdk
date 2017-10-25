@@ -16,6 +16,7 @@ return [
     'extension_not_loaded' => '扩展还没安装，请安装再重试',
     'Invalid deposit fields' => '充值参数不对',
     'third_party_no_qr_code' => '扫码无返回',
+    'ranks_invalid' => '无效排名格式',
     //##########【对应系统错误】######################
     'unsupported_gateway'=> '网关不支持',
     'unsupported_bank'=> '银行不支持',

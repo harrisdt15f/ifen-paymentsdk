@@ -17,13 +17,21 @@ trait Payment_sdk
 {
     /**
      * 获取目前开启的所有支付渠道 平台调用
+     * @param array $level_data
      * @return string
      * @throws Exception
      */
-    public function get_payment_setting()
+    public function get_payment_setting($level_data = [])
     {
         header("Content-Type:text/html;charset=utf-8");
-        $url = $this->lgvpay_methods_url;
+        $level_query = '';
+        if (!empty($level_data)) {
+            $level = [
+                'ranks' => $level_data
+            ];
+            $level_query = '?' . http_build_query($level);
+        }
+        $url = $this->lgvpay_methods_url . $level_query;
         if (is_array($url = $this->validate_sdk_url($url))) {
             return $url;
         }
@@ -37,7 +45,7 @@ trait Payment_sdk
             //##############[ first check if it's with ok and data ]############
             $rules = [
                 'ok' => 'required',
-                'data' => 'required',
+                //'data' => 'required',
             ];
             $result_valid = $this->easy_valid($payment_response, $rules, $error_status);
             if ($error_status === true) {
@@ -117,71 +125,98 @@ trait Payment_sdk
             'amount' => 'trim',
             'gateway' => 'trim',
         ];
-        if (isset($order_params['gateway']) && $order_params['gateway']=='banks')
-        {
-            $rules['bank']='required|alpha|min_len,4|max_len,6';
-            $filters['bank']= 'trim';
+        if (isset($order_params['gateway']) && $order_params['gateway'] == 'banks') {
+            $rules['bank'] = 'required|alpha|min_len,4|max_len,6';
+            $filters['bank'] = 'trim';
         }
         $order_params = $this->filter($order_params, $filters);
-        $order_params = $this->easy_valid($order_params, $rules, $error_status);
-        if ($error_status === true) {
-            return $order_params;
+        $method_log = $order_params;
+        $method_log['log_name'] = 'forward_log';
+        $this->log_args_write($method_log);
+        //##############################
+        foreach ($order_params as $key => $value) {
+            $validated_array = true;
+            if (is_array($value) && $key == 'ranks' && !empty($value)) {
+                foreach ($value as $k => $v) {
+                    $val[$k] = 'regex,/^[123456]$/';
+                }
+                $validated_array = $this->is_valid($value, $val);
+            }
+        }
+        if ($validated_array === true) {
+            if (empty($order_params['ranks'])) {
+                unset($order_params['ranks']);
+            }
+            $order_params = $this->easy_valid($order_params, $rules, $error_status);
+            if ($error_status === true) {
+                return $order_params;
+            }
+        } else {
+            $this->marker = __FUNCTION__;
+            $error_msg = $this->sdk_throw_error($validated_array, true, 'ranks_invalid');
+            return $error_msg;
         }
         //#######################################
         $order_params['ip'] = $this->get_client_ip(); //获取用户IP地址
-            $amount = 0.0;
-            if (isset($order_params['amount'])) {
-                $amount = empty($order_params['amount']) ? $amount : number_format($order_params['amount'], 2, '.', '');
-            }
+        $amount = 0.0;
+        if (isset($order_params['amount'])) {
+            $amount = empty($order_params['amount']) ? $amount : number_format($order_params['amount'], 2, '.', '');
+        }
         //##################【 准备要提交到第三方平台 】#################################
-            $forward_arr = [
-                'return_url' => $order_params['return_url'],
-                'order_no' => $order_params['order_no'],
-                'amount' => $amount,
-                'gateway' => $order_params['gateway'],
-                'ip' => $order_params['ip'],
+        $forward_arr = [
+            'return_url' => $order_params['return_url'],
+            'order_no' => $order_params['order_no'],
+            'amount' => $amount,
+            'gateway' => $order_params['gateway'],
+            'ip' => $order_params['ip'],
+            'ranks' => isset($order_params['level']) ? $order_params['level'] : [],
+        ];
+        if (isset($order_params['bank'])) //如果是 网银快捷就加银行编码
+        {
+            $forward_arr['bank'] = $order_params['bank'];
+        }
+        header("Content-Type:text/html;charset=utf-8");
+        $url = $this->lgvpay_forward_url;
+        $result = $this->httpPost($url, $forward_arr);
+        $result = json_decode($result, true);
+        if (!empty($result) && !isset($result['error_msg'])) {
+            $payment_response = $result;
+            //######################
+            $rules = [
+                'ok' => 'required',
+                'data' => 'required',
             ];
-            if (isset($order_params['bank'])) //如果是 网银快捷就加银行编码
-            {
-                $forward_arr['bank'] = $order_params['bank'];
+            $payment_response = $this->easy_valid($payment_response, $rules, $error_status);
+            if ($error_status === true) {
+                return $payment_response;
             }
-            header("Content-Type:text/html;charset=utf-8");
-            $url = $this->lgvpay_forward_url;
-            $result = $this->httpPost($url, $forward_arr);
-            $result = json_decode($result, true);
-            if (!empty($result) && !isset($result['error_msg'])) {
-                $payment_response = $result;
-                //######################
+            //######################
+            if (isset($payment_response['data']['form'])) {
+                //#########[校验]#############
+                $payment_response = $payment_response['data'];
                 $rules = [
-                    'ok' => 'required',
-                    'data' => 'required',
+                    'method' => 'required|alpha|min_len,3|max_len,4', //GET,POST
+                    'url' => 'required',
                 ];
-                $payment_response = $this->easy_valid($payment_response, $rules, $error_status);
+                $declare_chinese = [
+                    'url' => '支付跳转链接',
+                ];
+                $payment_response = $this->easy_valid($payment_response, $rules, $error_status, $declare_chinese);
                 if ($error_status === true) {
                     return $payment_response;
                 }
                 //######################
-                if (isset($payment_response['data']['form'])) {
-                    //#########[校验]#############
-                    $payment_response = $payment_response['data'];
-                    $rules = [
-                        'method' => 'required|alpha|min_len,3|max_len,4', //GET,POST
-                        'url' => 'required|valid_url',
-                    ];
-                    $declare_chinese = [
-                        'url' => '支付跳转链接',
-                    ];
-                    $payment_response = $this->easy_valid($payment_response, $rules, $error_status, $declare_chinese);
-                    if ($error_status === true) {
-                        return $payment_response;
-                    }
-                    //######################
-                    $this->buildForm($payment_response);
+                $this->buildForm($payment_response);
+            } else {
+                //#########[校验]#############
+                $payment_response = $payment_response['data'];
+                if ($payment_response === false) //data本是数组不应该返回false 现在返回false 所以这里配合改进
+                {
+                    $error_msg = $this->sdk_throw_error($result, true, 'channels_is_unavailable');
+                    return $error_msg;
                 } else {
-                    //#########[校验]#############
-                    $payment_response = $payment_response['data'];
                     $rules = [
-                        'url' => 'required|valid_url',
+                        'url' => 'required',
                     ];
                     $declare_chinese = [
                         'url' => '扫码链接',
@@ -193,11 +228,13 @@ trait Payment_sdk
                     //######################
                     return json_encode($payment_response); //$payment_response['url']
                 }
-            } else {
-                $this->marker = __FUNCTION__;
-                $error_msg = $this->sdk_throw_error($result, true, 'third_party_payment_confirm_error');
-                return $error_msg;
+
             }
+        } else {
+            $this->marker = __FUNCTION__;
+            $error_msg = $this->sdk_throw_error($result, true, 'third_party_payment_confirm_error');
+            return $error_msg;
+        }
         //#########################################
     }
 
@@ -272,7 +309,7 @@ trait Payment_sdk
      */
     public function payment_callback($tx_no, $all_inputs)
     {
-        $log_to_write['input']= $this->json_en_uni($all_inputs,true);
+        $log_to_write['input'] = $this->json_en_uni($all_inputs, true);
         log_args_write($log_to_write);
         $url = str_replace('~tx_no~', $tx_no, $this->lgvpay_notify_url);
         $result = $this->httpPost($url, $all_inputs);

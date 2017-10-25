@@ -121,6 +121,7 @@ class Payment_sdk_common
      */
     protected function httpGet($url)
     {
+        $this->http_get_post_log($url);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -155,17 +156,20 @@ class Payment_sdk_common
      */
     protected function httpPost($url, $params)
     {
+        $this->http_get_post_log($url, $params);
+/*
         $postData = '';
         //create name value pairs seperated by &
         foreach ($params as $k => $v) {
             $postData .= $k . '=' . $v . '&';
         }
-        $postData = rtrim($postData, '&');
+        $postData = rtrim($postData, '&');*/
+        $postData = http_build_query($params);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, count($postData));
+        curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
         curl_setopt($ch, CURLOPT_TIMEOUT_MS, $this->millisecond); //timeout in milliseconds
@@ -191,6 +195,15 @@ class Payment_sdk_common
         curl_close($ch);
         //##
         return $info === true ? $output : (isset($this->errors_filer[$return_error['error']]) ? $this->error_return($this->errors_filer[$return_error['error']]) : $this->error_return($this->errors_filer['third_party_url_error']));
+    }
+
+
+    private function http_get_post_log($url = '',$params=[])
+    {
+        $log['url'] = $url;
+        $log['params'] = json_encode($params);
+        $log['log_name'] = 'request';
+        $this->log_args_write($log);
     }
 
     /**
@@ -256,7 +269,7 @@ class Payment_sdk_common
         }
 
         //########################写日志###########################
-        $log = array_merge($error_reflect,$flc_all);
+        $log = array_merge($error_reflect, $flc_all);
         $this->log_args_write($log);
         //#########################################################
         $error_reflect = json_encode($error_reflect);
@@ -597,7 +610,7 @@ html;
         if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP']))
             $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
         else if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $ipaddress = strtok($_SERVER['HTTP_X_FORWARDED_FOR'], ',');
         else if (isset($_SERVER['HTTP_X_FORWARDED']) && !empty($_SERVER['HTTP_X_FORWARDED']))
             $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
         else if (isset($_SERVER['HTTP_FORWARDED_FOR']) && !empty($_SERVER['HTTP_FORWARDED_FOR']))
