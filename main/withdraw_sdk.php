@@ -66,6 +66,11 @@ trait Withdraw_sdk
         if ($error_status === true) {
             return $data;
         }
+        if ((int)$data['amount']<=0)
+        {
+            $error_msg = $this->sdk_throw_error($data, true, 'amount_under_zero');
+            return $error_msg;
+        }
         //##############################################
         $forward_arr = [
             'order_no' => $data['order_no'], // 平台提现订单号

@@ -25,11 +25,32 @@ trait Payment_sdk
     {
         header("Content-Type:text/html;charset=utf-8");
         $level_query = '';
-        if (!empty($level_data)) {
-            $level = [
-                'ranks' => $level_data
-            ];
-            $level_query = '?' . http_build_query($level);
+        if (!empty($level_data))
+        {
+            if (is_array($level_data) && is_array($level_data['ranks']) && isset($level_data['ranks']) && !empty($level_data['ranks'])) {
+                foreach ($level_data['ranks'] as $k => $v) {
+                    $rules[$k] = 'required|regex,/^[123456]$/';
+                }
+                $validated_array = $this->easy_valid($level_data['ranks'], $rules,$error_status);
+                //################
+                if ($error_status === true) {
+                    $this->marker = __FUNCTION__;
+                    $error_msg = $this->sdk_throw_error($validated_array, true, 'ranks_invalid');
+                    return $error_msg;
+                } else {
+                    $level = [
+                        'ranks' => $level_data['ranks']
+                    ];
+                    $level_query = '?' . http_build_query($level);
+                }
+                //################
+            }
+            else{
+                $this->marker = __FUNCTION__;
+                    $error_msg = $this->sdk_throw_error($level_data, true, 'ranks_invalid');
+                    return $error_msg;
+
+            }
         }
         $url = $this->lgvpay_methods_url . $level_query;
         if (is_array($url = $this->validate_sdk_url($url))) {
@@ -130,30 +151,29 @@ trait Payment_sdk
             $filters['bank'] = 'trim';
         }
         $order_params = $this->filter($order_params, $filters);
-        $method_log = $order_params;
-        $method_log['log_name'] = 'forward_log';
-        $this->log_args_write($method_log);
         //##############################
-        foreach ($order_params as $key => $value) {
-            $validated_array = true;
-            if (is_array($value) && $key == 'ranks' && !empty($value)) {
-                foreach ($value as $k => $v) {
-                    $val[$k] = 'regex,/^[123456]$/';
-                }
-                $validated_array = $this->is_valid($value, $val);
+        if (is_array($order_params['ranks']) && isset($order_params['ranks']) && !empty($order_params['ranks']))
+        {
+            foreach ($order_params['ranks'] as $k => $v) {
+                $rank_rules[$k] = 'required|regex,/^[123456]$/';
             }
-        }
-        if ($validated_array === true) {
-            if (empty($order_params['ranks'])) {
-                unset($order_params['ranks']);
-            }
-            $order_params = $this->easy_valid($order_params, $rules, $error_status);
+            $validated_array = $this->easy_valid($order_params['ranks'], $rank_rules,$error_status);
+            //################
             if ($error_status === true) {
-                return $order_params;
+                $this->marker = __FUNCTION__;
+                $error_msg = $this->sdk_throw_error($validated_array, true, 'ranks_invalid');
+                return $error_msg;
+            } else {
+                $order_params = $this->easy_valid($order_params, $rules, $error_status);
+                if ($error_status === true) {
+                    return $order_params;
+                }
             }
-        } else {
+            //################
+        }
+        else{
             $this->marker = __FUNCTION__;
-            $error_msg = $this->sdk_throw_error($validated_array, true, 'ranks_invalid');
+            $error_msg = $this->sdk_throw_error($order_params, true, 'ranks_invalid');
             return $error_msg;
         }
         //#######################################
@@ -169,14 +189,21 @@ trait Payment_sdk
             'amount' => $amount,
             'gateway' => $order_params['gateway'],
             'ip' => $order_params['ip'],
-            'ranks' => isset($order_params['level']) ? $order_params['level'] : [],
         ];
         if (isset($order_params['bank'])) //如果是 网银快捷就加银行编码
         {
             $forward_arr['bank'] = $order_params['bank'];
         }
+        if (isset($order_params['ranks']))
+        {
+            $forward_arr['ranks'] =$order_params['ranks'];
+        }
         header("Content-Type:text/html;charset=utf-8");
         $url = $this->lgvpay_forward_url;
+        $method_log = $order_params;
+        $method_log['url'] = $url;
+        $method_log['log_name'] = 'forward_log';
+        $this->log_args_write($method_log);
         $result = $this->httpPost($url, $forward_arr);
         $result = json_decode($result, true);
         if (!empty($result) && !isset($result['error_msg'])) {
